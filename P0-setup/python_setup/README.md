@@ -38,11 +38,13 @@ In the conda environment run:
 conda config --add channels https://conda.anaconda.org/gurobi
 ```
 
-In conda environment run: 
+Still in conda environment run: 
 ```
 conda install gurobi
 ```
-Run `04-gurobi-test.py` in IDE to make sure this was successful. Output should be somethingt like `“Restricted license - for non-production use only - expires yyy”`
+
+Run `02-gurobi-test.py` in IDE to make sure this was successful. Output should be something like `“Restricted license - for non-production use only - expires yyy.
+Gurobi environment started”`
 
 
 ## Useful hints
