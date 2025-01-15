@@ -1,4 +1,4 @@
-# A primer on Geometric Optimization
+# C++ setup for geometry processing
 
 
 ## Install tools
