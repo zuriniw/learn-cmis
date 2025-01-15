@@ -1,0 +1,9 @@
+[submodule "dependencies/libigl"]
+	path = dependencies/libigl
+	url = https://github.com/libigl/libigl.git
+[submodule "dependencies/LBFGSpp"]
+	path = dependencies/LBFGSpp
+	url = https://github.com/yixuan/LBFGSpp
+[submodule "P0-setup/C++_setup/dependencies/libigl"]
+	path = P0-setup/C++_setup/dependencies/libigl
+	url = https://github.com/libigl/libigl.git
