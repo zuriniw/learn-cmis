@@ -185,7 +185,7 @@ link_libraries(igl::core igl::opengl igl::opengl_glfw igl::opengl_glfw_imgui igl
 
 
 # create all executables
-add_library(ruffles OBJECT ${COMMON_SRC_FILES})
+# add_library(ruffles OBJECT ${COMMON_SRC_FILES})
 
 foreach(EXECUTABLE_SRC_FILE IN ITEMS ${EXECUTABLE_SRC_FILES})
     message(${EXECUTABLE_SRC_FILE})
@@ -193,7 +193,7 @@ foreach(EXECUTABLE_SRC_FILE IN ITEMS ${EXECUTABLE_SRC_FILES})
     message(${EXECUTABLE_NAME})
 
     add_executable("${EXECUTABLE_NAME}" ${EXECUTABLE_SRC_FILE})
-    target_link_libraries("${EXECUTABLE_NAME}" ruffles)
+    # target_link_libraries("${EXECUTABLE_NAME}" ruffles)
 
     if(WIN32)
         add_custom_command(TARGET ${EXECUTABLE_NAME} POST_BUILD     # Adds a post-build event to MyTest

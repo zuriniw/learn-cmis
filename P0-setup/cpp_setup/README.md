@@ -31,10 +31,16 @@ Install [CMake](https://cmake.org/download/), which is the build system that cre
 ## Building
 
 ### (1) Clone the code **recursively**
-This project uses [libigl](https://github.com/libigl/libigl/) for geometry processing. See the [libigl tutorial](https://libigl.github.io/tutorial/).
+
+This project uses [libigl](https://github.com/libigl/libigl) ([v2.3.0](https://github.com/libigl/libigl/releases/tag/v2.3.0)) for geometry processing. See the [libigl tutorial](https://libigl.github.io/tutorial/).
 Clone this repository with all dependencies, configured as submodules, using:
 ```
-git clone --recursive https://github.com/alexiiion/teach-geometric-optimization.git
+git clone --recursive https://github.com/interactive-structures/teach-cmis.git
+```
+
+Or, alteratively, update all dependencies if you already cloned it regularly:
+```
+git submodule update --init --recursive
 ```
 
 ### (2) Build using CMake
@@ -82,3 +88,8 @@ The line `cmake ../` will configure the project for you and `make` will build th
 This is the result of a successful compilation:
 
 <img src="./_instructions/result.PNG" width="500"/>
+
+<!--
+Point submodule to a commit (tag) 
+https://stackoverflow.com/questions/1777854/how-can-i-specify-a-branch-tag-when-adding-a-git-submodule
+-->
