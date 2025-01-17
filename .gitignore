@@ -29,5 +29,4 @@
 *.synctex*
 *.vscode*
 .DS_Store
-/P0-setup/cpp_setup/dependencies/libigl
-P0-setup/cpp_setup/dependencies/libigl
+
