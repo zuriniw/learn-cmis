@@ -1,0 +1,24 @@
+{
+    "env_path": "scenes/backgrounds/nsh.jpg",
+    "app_path": "scenes/apps/apps-1.json",
+    "questions": [
+        {"q": "What is the current wind speed?", "app": "weather", "lod": 2},
+        {"q": "What is the probability of precipitation today?", "app": "weather", "lod": 1},
+        {"q": "What is the current temperature?", "app": "weather", "lod": 0},
+        {"q": "What time is it now in your local timezone?", "app": "time", "lod": 0},
+        {"q": "When was the last alarm set?", "app": "time", "lod": 2},
+        {"q": "How much is the account balance?", "app": "finance", "lod": 0},
+        {"q": "What percentage of the savings goal has been achieved?", "app": "finance", "lod": 2},
+        {"q": "How many steps have you walked today?", "app": "fitness", "lod": 0},
+        {"q": "What is the current value of Amazon stock?", "app": "stocks", "lod": 2},
+        {"q": "When is your next meeting?", "app": "events", "lod": 2}
+    ],
+    "relevance": {
+        "weather": 1.0,
+        "time": 0.6, 
+        "finance": 0.6,
+        "fitness": 0.2,
+        "stocks": 0.2,
+        "events": 0.2
+    }
+}

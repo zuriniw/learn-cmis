@@ -1,0 +1,8 @@
+{
+    "img_path": "kitchen-2.jpg",
+    "objects": {
+        "salmon": [390, 420],
+        "pasta": [390, 210]
+    },
+    "gaze": 500
+}
