@@ -29,3 +29,6 @@
 *.synctex*
 *.vscode*
 .DS_Store
+/P1-ui-optimization/.idea
+/P1-ui-optimization/_inclass-examples/.idea
+/P1-ui-optimization/_inclass-examples/menu/.idea
