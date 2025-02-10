@@ -458,6 +458,11 @@ class UI:
         #print(name, "overlapping poi:", is_overlap)
 
     def is_question_overlap(self, placement):
+        # Check if the question panel overlaps with the "All Apps" button at position [0,0]
+        if placement == [0, 0]:
+            return True
+
+        # Check if the question panel overlaps with the point of interest
         circle_x, circle_y, circle_radius = self.poi_pos[0], self.poi_pos[1], self.poi_size
         rect_x, rect_y = placement[0] * self.BLOCK_SIZE, placement[1] * self.BLOCK_SIZE
         rect_width = 2 * self.BLOCK_SIZE
