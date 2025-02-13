@@ -21,23 +21,23 @@ class ListAppUI:
         self.parent = parent
         self.app = app
         self.i = 0 
-        self.label = tk.Label(self.parent, text=f"{self.app.name}: {self.app.info[self.i]}", height=5, anchor="w", justify="left", borderwidth=1, relief="solid")
-        self.label.pack(pady=5, padx=10, fill="x", expand=True)
+        self.frame = tk.Label(self.parent, text=f"{self.app.name}: {self.app.info[self.i]}", height=5, anchor="w", justify="left", borderwidth=1.5, relief="solid")
+        self.frame.pack(pady=2, padx=10, fill="x", expand=True)
 
-        #self.label.bind("<Button-1>", self.toggle_info)
-        self.label.bind("<Button-1>", self.delayed_toggle_info)
+        #self.frame.bind("<Button-1>", self.toggle_info)
+        self.frame.bind("<Button-1>", self.delayed_toggle_info)
 
     def delayed_toggle_info(self, event):
-        self.label.unbind("<Button-1>") 
-        self.label.after(DELAY_ALL, self.toggle_info)
+        self.frame.unbind("<Button-1>") 
+        self.frame.after(DELAY_ALL, self.toggle_info)
 
     #def toggle_info(self, event):
     def toggle_info(self):
         self.i = (self.i + 1) % len(self.app.info)
-        self.label.config(text=f"{self.app.name}: {self.app.info[self.i]}")
+        self.frame.config(text=f"{self.app.name}: {self.app.info[self.i]}")
 
         # re-bind click
-        self.label.bind("<Button-1>", self.delayed_toggle_info)
+        self.frame.bind("<Button-1>", self.delayed_toggle_info)
 
 class MainAppUI:
     def __init__(self, parent, app, lod, placement, ui):
@@ -51,49 +51,108 @@ class MainAppUI:
         rowspan = 1 if lod < 2 else 2
         colspan = 1 if lod < 1 else 2
 
+
+        self.frame = tk.Frame(self.parent, borderwidth=1.5, relief="solid")
+        self.frame.grid(
+            column=self.placement[0], 
+            row=self.placement[1], 
+            rowspan=rowspan, 
+            columnspan=colspan, 
+            sticky="nsew",
+            padx=2,
+            pady=2
+        )
+
+        # TITLE
+        self.title_label = tk.Label(
+            self.frame,
+            text=f"{self.app.name}:",
+            font=("Arial", 10, "bold",),
+            fg = 'blue',
+            background='lightgrey',
+            anchor="w",
+            justify="left",
+            padx=7,
+            pady = 0
+        )
+
+        self.title_label.grid(row=0, column=0, sticky="ew")
+
+        # CONTENT
         wrap = (colspan * UI.BLOCK_SIZE) * 0.9
-        self.label = tk.Label(self.parent, text=f"{self.app.name}:\n{self.app.get_lod(self.lod)}", font=("Arial", 9), wraplength=wrap, borderwidth=1, relief="solid", anchor="w", justify="left")
 
-        # Place the label in the grid
-        self.label.grid(column=self.placement[0], row=self.placement[1], rowspan=rowspan, columnspan=colspan, sticky="nsew")
+        self.content_label = tk.Label(
+            self.frame,
+            text=self.format_content(self.app.get_lod(self.lod)),  # 使用单独的格式化函数
+            font=("Arial", 9),
+            wraplength=wrap,
+            anchor="w",
+            justify="left",
+            padx=4
+        )
 
-        # Bind the label to the click event
-        #self.label.bind("<Button-1>", self.update_lod)
-        self.label.bind("<Button-1>", self.delayed_update_lod)
 
+        self.content_label.grid(row=1, column=0, sticky="nsew")
+
+        # 配置grid权重，使内容Label可以扩展
+        self.frame.grid_rowconfigure(1, weight=1)
+        self.frame.grid_columnconfigure(0, weight=1)
+
+        # 绑定点击事件
+        self.frame.bind("<Button-1>", self.delayed_update_lod)
+        self.title_label.bind("<Button-1>", self.delayed_update_lod)
+        self.content_label.bind("<Button-1>", self.delayed_update_lod)
+
+
+    # 在类中添加这个辅助方法
+    def format_content(self, content):
+        lines = content.split('\n')
+        formatted_lines = []
+        for line in lines:
+            if ':' in line:
+                # 将每行按第一个冒号分割，最多分割一次
+                parts = line.split(':', 1)
+                formatted_lines.append(f"{parts[0]}:\n{parts[1]}")
+            else:
+                formatted_lines.append(line)
+        return '\n\n'.join(formatted_lines)
 
     def delayed_update_lod(self, event):
-        self.label.unbind("<Button-1>")
+        self.frame.unbind("<Button-1>")
 
         # add delay before updating LoD
-        self.label.after(DELAY_LOD, self.update_lod)
+        self.frame.after(DELAY_LOD, self.update_lod)
 
 
     def update_lod(self):
-        # Update LoD
-        self.lod = (self.lod + 1) % len(self.app.info)
 
-        # Determine rowspan and colspan based on LOD
+        self.lod = (self.lod + 1) % len(self.app.info)
+        
+        # Update grid configuration
         rowspan = 1 if self.lod < 2 else 2
         colspan = 1 if self.lod < 1 else 2
-
-        # Update the label text to reflect the new LOD
         wrap = (colspan * UI.BLOCK_SIZE) * 0.9
-        self.label.config(text=f"{self.app.name}:\n{self.app.get_lod(self.lod)}", wraplength=wrap)
-        self.label.lift()
-        self.ui.btn_all.lift()
-
-        # Update the grid configuration
-        self.label.grid(
+        
+        # Update content with same formatting as init
+        self.content_label.config(
+            text=self.format_content(self.app.get_lod(self.lod)),  # 使用单独的格式化函数
+            wraplength=wrap
+        )
+            
+        # Update frame grid
+        self.frame.grid(
             column=self.placement[0], 
             row=self.placement[1], 
             rowspan=rowspan, 
             columnspan=colspan, 
             sticky="nsew"
         )
+    
+        # Lift elements
+        self.frame.lift()
+        self.ui.btn_all.lift()
 
-        # re-bind click
-        self.label.bind("<Button-1>", self.delayed_update_lod)
+
 
 
 class UILogger:
@@ -216,6 +275,8 @@ class UI:
         self.root.geometry(f"{UI.WINDOW_WIDTH}x{UI.WINDOW_HEIGHT}")
         self.root.resizable(False, False)
 
+        self.root.wm_attributes('-topmost', True)
+
         # Initialize background image 
         self.init_background()
 
@@ -283,9 +344,9 @@ class UI:
         self.btn_close_all = tk.Button(self.frame_all, text="Close", command=self.close_all)
         self.btn_close_all.pack(pady=10)
 
-        # Label
-        self.label_all = tk.Label(self.frame_all, text="All Applications")
-        self.label_all.pack(pady=10)
+        # title label
+        self.title_label = tk.Label(self.frame_all, text="All Applications")
+        self.title_label.pack(pady=0.1)
 
         # List Applications
         self.canvas_all_list = tk.Canvas(self.frame_all)
@@ -331,10 +392,12 @@ class UI:
             self.logging.log_summary(self.questions, self.overlapping_poi)
             sys.exit(0)
 
+        # 修改这一行:使用label_question而不是frame_question
         self.label_question.config(text=self.questions[self.qi]["q"])
 
+
     def init_question(self):
-        self.frame_question = tk.Frame(self.root, width=UI.QUESTIONS_WIDTH, height=UI.QUESTIONS_HEIGHT)
+        self.frame_question = tk.Frame(self.root, width=UI.QUESTIONS_WIDTH, height=UI.QUESTIONS_HEIGHT, padx=2)
         self.frame_question.pack_propagate(False)
         self.label_question = tk.Label(self.frame_question, 
                 text=self.questions[self.qi]["q"], 
@@ -348,6 +411,7 @@ class UI:
         self.entry_answer.pack()
         self.btn_submit.pack()
         self.frame_question.place(x=self.q_pos[0], y=self.q_pos[1], anchor="nw")
+
 
     def load_scene(self, path="scene.json", shuffle_questions=True):
         try:

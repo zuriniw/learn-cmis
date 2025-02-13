@@ -7,12 +7,16 @@ import sys
 import numpy as np
 import os
 
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.preprocessing import MinMaxScaler  # 归一化工具
+
 ########################################################
 #############   objective func weights   ###############
 ########################################################
 
-rewards = [1, 0.001, 0,2]
-poi_pan = 0.002 
+rewards = [2, 1, 1, 0]
+poi_pan = 0.5 
 
 '''
  m.setObjective(
@@ -47,25 +51,50 @@ Potentially relevant information can be obtained by calling scene_UI.get_info(),
 '''
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-scene_path = "scenes/scene-1.json"
+scene_path = "scenes/scene-3.json"
 if len(sys.argv) >= 2:
     scene_path = sys.argv[1]
 
 scene_UI = UI(scene_path)
 app_ids = list(scene_UI.apps.keys())
-info = scene_UI.get_info()
 
-
-q_center = np.array([
-    info["questions_pos"][0] + info["questions_size"][0]/2,  # x坐标中心
-    info["questions_pos"][1] + info["questions_size"][1]/2   # y坐标中心
-])
-
-grid_a = info["block_size"]
 
 ########################################################
-#############   nomalization helper   ################# 
+#############    helper   ################# 
 ########################################################
+
+
+def calculate_automated_relevance(scene):
+    relevance = {}
+    scores_list = []
+
+    for app_name, app in scene.apps.items():
+        app_info = " ".join([app.get_lod(i) for i in range(len(app.info))])
+        all_texts = [app_info] + [q["q"] for q in scene.questions]
+
+        # TF-IDF 计算，并去除停用词
+        vectorizer = TfidfVectorizer(stop_words='english')
+        tfidf_matrix = vectorizer.fit_transform(all_texts)
+
+        # 计算余弦相似度
+        app_vector = tfidf_matrix[0]
+        question_vectors = tfidf_matrix[1:]
+        scores = cosine_similarity(app_vector, question_vectors).flatten()
+
+        mean_score = scores.mean()
+        scores_list.append((app_name, mean_score))  # 先存起来，稍后归一化
+    
+    # 归一化处理
+    if scores_list:
+        scaler = MinMaxScaler()
+        normalized_scores = scaler.fit_transform([[score] for _, score in scores_list])
+        
+        # 重新存储归一化分数
+        for i, (app_name, _) in enumerate(scores_list):
+            relevance[app_name] = normalized_scores[i, 0]
+
+    return relevance
+
 
 def normalize_terms():
     # 1// question proximity: max and min distance
@@ -95,6 +124,29 @@ def normalize_terms():
         'q_min_dist': min_dist,
         'max_roi_dist': max_roi_dist
     }
+
+########################################################
+########################################################
+
+info = scene_UI.get_info()
+
+
+q_center = np.array([
+    info["questions_pos"][0] + info["questions_size"][0]/2, 
+    info["questions_pos"][1] + info["questions_size"][1]/2  
+])
+grid_a = info["block_size"]
+circle_x, circle_y = info["roi_pos"][0], info["roi_pos"][1]
+circle_radius = info["roi_rad"]
+bpos = info["btn_all_pos"]
+bsize = info["btn_all_size"]
+qpos = info["questions_pos"]
+qsize = info["questions_size"] 
+
+rele = calculate_automated_relevance(scene_UI)
+
+# print(f'####################' + '/n' + rele + '/n' + '###################')
+print(rele)
 
 ########################################################
 #############        init model      ################### 
@@ -131,16 +183,14 @@ for app in app_ids:
                     pos = np.array([pos_x*grid_a, pos_y*grid_a])
                     
                     # Check overlap with questions panel
-                    qpos = info["questions_pos"]
-                    qsize = info["questions_size"] 
+                    
                     if (pos[0] < qpos[0] + qsize[0] and pos[0] + grid_a > qpos[0] and
                         pos[1] < qpos[1] + qsize[1] and pos[1] + grid_a > qpos[1]):
                         m.addConstr(x[app, lod, xIdx, yIdx] == 0)
                         break  # 一旦发现重叠就可以停止检查其他位置
                     
                     # Check overlap with Apps button
-                    bpos = info["btn_all_pos"]
-                    bsize = info["btn_all_size"]
+                    
                     if (pos[0] < bpos[0] + bsize[0] and pos[0] + grid_a > bpos[0] and
                         pos[1] < bpos[1] + bsize[1] and pos[1] + grid_a > bpos[1]):
                         m.addConstr(x[app, lod, xIdx, yIdx] == 0)
@@ -213,7 +263,6 @@ for app in app_ids:
 
 
 # 2. Penalty for overlapping with red dot (ROI)
-
 roiAvoidanceTerm = 0
 for app in app_ids:
     for lod in range(scene_UI.LODS):
@@ -222,38 +271,30 @@ for app in app_ids:
                 # rect zone
                 rect_x, rect_y = xIdx * grid_a, yIdx * grid_a
                 rect_width, rect_height = grid_a, grid_a
-                
                 if lod > 0:
                     rect_width = 2 * grid_a
                 if lod > 1:
-                    rect_height = 2 * grid_a
-                
-                # add pan when overlap roi
-                circle_x, circle_y = info["roi_pos"][0], info["roi_pos"][1]
-                circle_radius = info["roi_rad"]
-                
+                    rect_height = 2 * grid_a  
                 # check overlapping: * use methods in "UI.py" about line 440ish (search: self.overlapping += 1)
                 if scene_UI.circle_rectangle_overlap(circle_x, circle_y, circle_radius, 
                                                    rect_x, rect_y, rect_width, rect_height):
                     roiAvoidanceTerm -= poi_pan * x[app, lod, xIdx, yIdx]
 
-
-
 # 3. Relevance term
-relevanceTerm = sum(info["relevance"][app] * x[app, lod, xIdx, yIdx]
+relevanceTerm = sum(rele[app] * x[app, lod, xIdx, yIdx]
                    for app in app_ids
                    for lod in range(scene_UI.LODS)
                    for xIdx in range(scene_UI.COLS)
                    for yIdx in range(scene_UI.ROWS))
 
 # 4. LoD reward
-lodRewardTerm = sum(info["relevance"][app] * (lod + 1) / 3 * x[app, lod, xIdx, yIdx]
+lodRewardTerm = sum(rele[app] * (lod + 1) / 3 * x[app, lod, xIdx, yIdx]
                    for app in app_ids
                    for lod in range(scene_UI.LODS)
                    for xIdx in range(scene_UI.COLS)
                    for yIdx in range(scene_UI.ROWS))
 
-# 5.beta: 
+# 5.beta: cross
 coupledLodProximityTerm = sum(
     # normalized_dist high，low lod big pan
     # normalized_dist low， low lod small pan
