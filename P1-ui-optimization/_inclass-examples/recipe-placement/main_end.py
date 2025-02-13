@@ -7,6 +7,10 @@ from gurobipy import GRB
 
 from ui import UI
 
+##########################
+##########################
+##########################
+
 def obj_dist(obj, x, y):
     return math.sqrt((obj[0] - x)**2 + (obj[1] - y)**2)
 
@@ -18,8 +22,12 @@ def normalize_array(arr):
     max_val = np.max(arr)
     return (arr - min_val) / (max_val - min_val) if max_val != min_val else np.zeros_like(arr)
 
+##########################
+##########################
+##########################
+
 def main2():
-    scene = "kitchen-3.json"
+    scene = "/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/_inclass-examples/recipe-placement/kitchen-3.json"
 
     scene_UI = UI(scene)
 
@@ -28,8 +36,12 @@ def main2():
 
     # Formulate as a grid assignment problem 
     # Compute grid
-    cols, rows = int(width / app_size), int(height / app_size)
 
+    cols, rows = int(width / app_size), int(height / app_size)
+    
+    ##########################
+    ##########################
+    ##########################
     # Calculate distance to salmon
     salmon_dist = np.zeros((cols, rows))
     for xi in range(cols): 
@@ -59,6 +71,10 @@ def main2():
     gaze_dist = normalize_array(gaze_dist)
     #scene_UI.debug_grid(gaze_dist)
 
+##########################
+##########################
+##########################
+
     m = gp.Model("UI Placement")
 
     # Add decision variables 
@@ -68,6 +84,10 @@ def main2():
             for yi in range(rows):
                 x[app, xi, yi] = m.addVar(vtype=GRB.BINARY, name=f"{app}_{xi}_{yi}")
     m.update()
+
+##########################
+##########################
+##########################
 
     # Add constraints 
     # Each element should be assigned once 
@@ -85,6 +105,10 @@ def main2():
             if pasta_poi[xi, yi]: 
                 m.addConstr(sum(x[app, xi, yi] for app in apps) == 0, f"pasta_poi_constr_{xi}_{yi}")
 
+##########################
+##########################
+##########################
+
     # Objectives
     # Minimize distance of salmon to recipe and ingredients
     salmonTerm = 0.0
@@ -99,6 +123,10 @@ def main2():
 
     cost = salmonTerm + pastaTerm + gazeTerm
 
+##########################
+##########################
+##########################
+
     m.setObjective(cost, GRB.MINIMIZE)
     m.optimize()
 
@@ -111,6 +139,10 @@ def main2():
                     ui_placements[app] = app_size * np.array([xi, yi])
 
     scene_UI.init_app(ui_placements)
+
+##########################
+##########################
+##########################
 
 if __name__ == "__main__":
     main2()

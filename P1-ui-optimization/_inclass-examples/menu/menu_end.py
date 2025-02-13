@@ -3,14 +3,15 @@ from gurobipy import *
 
 import random
 import math
-
+##########################
+##########################
+##########################
 def calculate_distance (i, j):
     return abs(i - j)
 
 # Exponential penalty on word length
 def calculate_reading_cost(element):
   return (len(element)**math.e)
-
 
 # Normalizes a list such that the values are mapped between 0+e and 1
 def normalize_list(data, e=0.001):
@@ -25,43 +26,52 @@ def normalize_dict(dictionary, e=0.001):
     dictionary[keys[i]] = values[i]
   return dictionary
 
-# define elements and positions
+##########################
+##### initialize context parameters ######
+########################## define elements and positions
+
 elements = ['Open', 'About','Quit','Help','Close', 'Save','Edit','Insert','Delete']
 positions = list(range(len((elements))))
 sizes = [1,2]
 
-# define usage frequency
+########################## define usage frequency
 frequency = {e:random.random() for e in elements}
 frequency = normalize_dict(frequency)
 
-# define readings costs
+########################## define readings costs
 reading_costs = {e:calculate_reading_cost(e) for e in elements}
 reading_costs = normalize_dict(reading_costs)
 
-# define distances 
+########################## define distances 
 distances = [calculate_distance(0, p) for p in positions]
 distances = normalize_list(distances)
 
-m = Model("linear_menu")
-x = {}
+##########################
+####  build Gurobi model，create context parameter dictionary x (穷举problem space) ########
+##########################
+m = Model("linear_menu")          
+x = {}                           
+for e in elements:               
+   for s in sizes:              
+      for p in positions:      
+          x[e, s, p] = m.addVar(vtype=GRB.BINARY, name="%s_%i_%i" %(e, s, p)) # 为每个（元素-尺寸-位置）组合创建二进制变量，x[e,s,p]=1 表示元素e以尺寸s放在位置p
+          # 定义所有可能的摆放方案为变量，用0/1表示是否选择
 
-for e in elements:
-    for s in sizes:
-       for p in positions:
-          x[e, s, p] = m.addVar(vtype=GRB.BINARY, name="%s_%i_%i" %(e, s, p))
-
-# Constraint: Sum of element sizes should be less than total positions
+##########################
+##########################
+##########################
+########################## Constraint: Sum of element sizes should be less than total positions
 m.addConstr(
     sum(s * x[e, s, p] for e in elements for s in sizes for p in positions) == len(positions),
     "SizeLimit"
 )
-# Constraint: Each element can be assigned at most one size
+########################## Constraint: Each element can be assigned at most one size
 for e in elements:
     m.addConstr(
         sum(x[e, s, p] for s in sizes for p in positions) <= 1,
         f"UniqueSize_{e}"
     )
-# Constraint: Each position can contain at most one element at a particular size
+########################## Constraint: Each position can contain at most one element at a particular size
 for p in positions:
    m.addConstr(
       sum(x[e,s,p] for e in elements for s in sizes) <= 1, f"UniquePos_{p}"
@@ -74,11 +84,14 @@ for p in positions:
       sum(x[e, s, p] for e in elements for s in sizes) <= 1, 
       f"overlap_{p}"
    )
-# Constraint: Last element cannot be occupied with size 2 element 
+########################## Constraint: Last element cannot be occupied with size 2 element 
 m.addConstr(
    sum(x[e,2,positions[-1]] for e in elements) == 0, "last_element"
 )
 
+##########################
+##########################
+##########################
 w_f = 1
 w_r = 0 
 
@@ -90,6 +103,9 @@ objective = quicksum(s * (w_f * frequency[e] + w_f * reading_costs[e]) * distanc
 m.setObjective(objective, GRB.MINIMIZE)
 m.optimize()
 
+##########################
+##########################
+##########################
 print(frequency)
 for e in elements:
     for s in sizes:

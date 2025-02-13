@@ -27,7 +27,7 @@ class UI:
             scene = json.load(file)
 
         # Environment background img
-        env = Image.open(scene["img_path"])
+        env = Image.open('/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/_inclass-examples/recipe-placement/kitchen-3.jpg')
         env = env.resize((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
         self.window.paste(env, (0, 0))
 
@@ -42,16 +42,16 @@ class UI:
 
         # Directions 
         directions_path = "directions.jpg"
-        app_directions = Image.open(directions_path)
+        app_directions = Image.open('/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/_inclass-examples/recipe-placement/directions.jpg')
         app_directions = app_directions.resize((self.APP_SIZE, self.APP_SIZE))
         self.apps["directions"] = app_directions
 
-        ingredients_path = "ingredients.jpg"
+        ingredients_path = "/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/_inclass-examples/recipe-placement/ingredients.jpg"
         app_ingredients = Image.open(ingredients_path)
         app_ingredients = app_ingredients.resize((self.APP_SIZE, self.APP_SIZE))
         self.apps["ingredients"] = app_ingredients
 
-        video_path = "video.jpg"
+        video_path = "/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/_inclass-examples/recipe-placement/video.jpg"
         app_video = Image.open(video_path)
         app_video = app_video.resize((self.APP_SIZE, self.APP_SIZE))
         self.apps["video"] = app_video

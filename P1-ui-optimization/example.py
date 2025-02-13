@@ -1,5 +1,8 @@
 import sys
 from ui import UI 
+import os
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 
 
 # Check if an argument is provided

@@ -18,6 +18,17 @@ def main():
         "video": [450, 0]
     }
 
+    # decision variables
+    rows, cols = int(height/ app.size), int(width/ app_size)
+    x = {}
+    for app in apps:
+        for xi in range(cols):
+            for yi in range(rows):
+                x[app, xi, yi] = m.addVar(RGB.BINARY, "x_OWEIDH",% (app, xi, yi))
+
+    # constrain: set each element to one possition
+    
+    
     
     scene_UI.init_app(ui_placements)
 

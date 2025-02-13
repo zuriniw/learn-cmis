@@ -5,27 +5,25 @@ import itertools
 import random
 import sys
 import numpy as np
+import os
 
-# Check if an argument is provided
-scene_path = "scenes/scene-1.json"
-if len(sys.argv) >= 2:
-    scene_path = sys.argv[1]
+########################################################
+#############   objective func weights   ###############
+########################################################
 
-# Loads target scene
-# default: scene.json
-scene_UI = UI(scene_path)
+rewards = [1, 0.001, 0,2]
+poi_pan = 0.002 
 
-# Gets available applications
-app_ids = list(scene_UI.apps.keys())
-
-# Creates a model
-m = gp.Model("ui_optimizer")
-
-# Creates the decision variables
-x = {}
-for app in app_ids:
-    for lod, xIdx, yIdx in itertools.product(range(scene_UI.LODS), range(scene_UI.COLS), range(scene_UI.ROWS)):
-        x[app, lod, xIdx, yIdx] = m.addVar(vtype=GRB.BINARY, name="x_%s_%s_%s_%s" % (app, lod, xIdx, yIdx))
+'''
+ m.setObjective(
+    rewards[0]*relevanceTerm + 
+    rewards[1]*questionProximityTerm +
+    rewards[2]*lodRewardTerm +
+    rewards[3]*coupledLodProximityTerm +
+    roiAvoidanceTerm,
+    GRB.MAXIMIZE
+)
+'''
 
 ##### TODO: DEFINE OBJECTIVES AND CONSTRAINTS #####
 '''
@@ -48,23 +46,245 @@ Potentially relevant information can be obtained by calling scene_UI.get_info(),
 - "relevance" (dict[str, float]): A dictionary mapping application names to their relevance scores.
 '''
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+scene_path = "scenes/scene-1.json"
+if len(sys.argv) >= 2:
+    scene_path = sys.argv[1]
+
+scene_UI = UI(scene_path)
+app_ids = list(scene_UI.apps.keys())
+info = scene_UI.get_info()
+
+
+q_center = np.array([
+    info["questions_pos"][0] + info["questions_size"][0]/2,  # x坐标中心
+    info["questions_pos"][1] + info["questions_size"][1]/2   # y坐标中心
+])
+
+grid_a = info["block_size"]
+
+########################################################
+#############   nomalization helper   ################# 
+########################################################
+
+def normalize_terms():
+    # 1// question proximity: max and min distance
+    all_distances = []
+    for xIdx in range(scene_UI.COLS):
+        for yIdx in range(scene_UI.ROWS):
+            for lod in range(scene_UI.LODS):
+                if lod == 0:
+                    pos = np.array([(xIdx + 0.5) * grid_a, 
+                                  (yIdx + 0.5) * grid_a])
+                elif lod == 1:
+                    pos = np.array([(xIdx + 1.0) * grid_a, 
+                                  (yIdx + 0.5) * grid_a])
+                else:
+                    pos = np.array([(xIdx + 1.0) * grid_a, 
+                                  (yIdx + 1.0) * grid_a])
+                dist = np.sqrt(np.sum((pos - q_center)**2))
+                all_distances.append(dist)
+    
+    max_dist = max(all_distances)
+    min_dist = min(all_distances)
+    
+    # 2// ROI: max distance
+    max_roi_dist = np.sqrt(scene_UI.COLS**2 + scene_UI.ROWS**2) * grid_a   
+    return {
+        'q_max_dist': max_dist,
+        'q_min_dist': min_dist,
+        'max_roi_dist': max_roi_dist
+    }
+
+########################################################
+#############        init model      ################### 
+########################################################
+
+m = gp.Model("ui_optimizer")
+
+# Creates the decision variables
+x = {}
+for app in app_ids:
+    for lod, xIdx, yIdx in itertools.product(range(scene_UI.LODS), range(scene_UI.COLS), range(scene_UI.ROWS)):
+        x[app, lod, xIdx, yIdx] = m.addVar(vtype=GRB.BINARY, name="x_%s_%s_%s_%s" % (app, lod, xIdx, yIdx))
+
+########################################################
+#############     set constrains     ################### 
+########################################################
+
+for app in app_ids:
+    for lod in range(scene_UI.LODS):
+        for xIdx in range(scene_UI.COLS):
+            for yIdx in range(scene_UI.ROWS):
+                # 计算组件占用的所有格子的位置
+                positions = []
+                if lod == 0:
+                    positions = [(xIdx, yIdx)]
+                elif lod == 1:
+                    positions = [(xIdx, yIdx), (xIdx+1, yIdx)]
+                elif lod == 2:
+                    positions = [(xIdx, yIdx), (xIdx+1, yIdx), 
+                               (xIdx, yIdx+1), (xIdx+1, yIdx+1)]
+                
+                # 对于每个位置，如果任何一个格子与面板/按钮重叠，就禁止这个放置
+                for pos_x, pos_y in positions:
+                    pos = np.array([pos_x*grid_a, pos_y*grid_a])
+                    
+                    # Check overlap with questions panel
+                    qpos = info["questions_pos"]
+                    qsize = info["questions_size"] 
+                    if (pos[0] < qpos[0] + qsize[0] and pos[0] + grid_a > qpos[0] and
+                        pos[1] < qpos[1] + qsize[1] and pos[1] + grid_a > qpos[1]):
+                        m.addConstr(x[app, lod, xIdx, yIdx] == 0)
+                        break  # 一旦发现重叠就可以停止检查其他位置
+                    
+                    # Check overlap with Apps button
+                    bpos = info["btn_all_pos"]
+                    bsize = info["btn_all_size"]
+                    if (pos[0] < bpos[0] + bsize[0] and pos[0] + grid_a > bpos[0] and
+                        pos[1] < bpos[1] + bsize[1] and pos[1] + grid_a > bpos[1]):
+                        m.addConstr(x[app, lod, xIdx, yIdx] == 0)
+                        break  # 一旦发现重叠就可以停止检查其他位置
+
+
+#  4 elements placed
+m.addConstr(sum(x[app, lod, xIdx, yIdx] 
+           for app in app_ids
+           for lod in range(scene_UI.LODS)
+           for xIdx in range(scene_UI.COLS)
+           for yIdx in range(scene_UI.ROWS)) == 4)
+
+#  Each element can only be displayed in one level of detail and one position
+for app in app_ids:
+    m.addConstr(sum(x[app, lod, xIdx, yIdx]
+               for lod in range(scene_UI.LODS)
+               for xIdx in range(scene_UI.COLS) 
+               for yIdx in range(scene_UI.ROWS)) <= 1)
+
+# No overlapping elements considering LoD size
+for xIdx in range(scene_UI.COLS):
+    for yIdx in range(scene_UI.ROWS):
+        overlap_sum = (
+            # LoD 0: 1x1
+            sum(x[app, 0, xIdx, yIdx] for app in app_ids) +
+            # LoD 1: 1x2, check current and right cell
+            sum(x[app, 1, xi, yIdx] for app in app_ids 
+                for xi in range(max(0, xIdx-1), xIdx+1) if xi < scene_UI.COLS) +
+            # LoD 2: 2x2, check current and surrounding cells
+            sum(x[app, 2, xi, yi] for app in app_ids 
+                for xi in range(max(0, xIdx-1), xIdx+1) if xi < scene_UI.COLS
+                for yi in range(max(0, yIdx-1), yIdx+1) if yi < scene_UI.ROWS)
+        )
+        m.addConstr(overlap_sum <= 1)
+
+########################################################
+############# set reward and panelty ################### 
+########################################################
+
+norm_params = normalize_terms()
+
+# 1. Reward proximity to question panel
+questionProximityTerm = 0
+for app in app_ids:
+    for lod in range(scene_UI.LODS):
+        for xIdx in range(scene_UI.COLS):
+            for yIdx in range(scene_UI.ROWS):
+                # widget center
+                if lod == 0:  # 1x1
+                    pos = np.array([
+                        (xIdx + 0.5) * grid_a,  
+                        (yIdx + 0.5) * grid_a
+                    ])
+                elif lod == 1:  # 1x2
+                    pos = np.array([
+                        (xIdx + 1.0) * grid_a,  # center of 2 grids
+                        (yIdx + 0.5) * grid_a
+                    ])
+                else:  # lod 2, 2x2
+                    pos = np.array([
+                        (xIdx + 1.0) * grid_a,  
+                        (yIdx + 1.0) * grid_a
+                    ])
+                
+                dist_to_questions = np.sqrt(np.sum((pos - q_center)**2))
+                normalized_dist = ((dist_to_questions - norm_params['q_min_dist']) / 
+                                (norm_params['q_max_dist'] - norm_params['q_min_dist']))
+                questionProximityTerm += (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
+
+
+# 2. Penalty for overlapping with red dot (ROI)
+
+roiAvoidanceTerm = 0
+for app in app_ids:
+    for lod in range(scene_UI.LODS):
+        for xIdx in range(scene_UI.COLS):
+            for yIdx in range(scene_UI.ROWS):
+                # rect zone
+                rect_x, rect_y = xIdx * grid_a, yIdx * grid_a
+                rect_width, rect_height = grid_a, grid_a
+                
+                if lod > 0:
+                    rect_width = 2 * grid_a
+                if lod > 1:
+                    rect_height = 2 * grid_a
+                
+                # add pan when overlap roi
+                circle_x, circle_y = info["roi_pos"][0], info["roi_pos"][1]
+                circle_radius = info["roi_rad"]
+                
+                # check overlapping: * use methods in "UI.py" about line 440ish (search: self.overlapping += 1)
+                if scene_UI.circle_rectangle_overlap(circle_x, circle_y, circle_radius, 
+                                                   rect_x, rect_y, rect_width, rect_height):
+                    roiAvoidanceTerm -= poi_pan * x[app, lod, xIdx, yIdx]
+
+
+
+# 3. Relevance term
+relevanceTerm = sum(info["relevance"][app] * x[app, lod, xIdx, yIdx]
+                   for app in app_ids
+                   for lod in range(scene_UI.LODS)
+                   for xIdx in range(scene_UI.COLS)
+                   for yIdx in range(scene_UI.ROWS))
+
+# 4. LoD reward
+lodRewardTerm = sum(info["relevance"][app] * (lod + 1) / 3 * x[app, lod, xIdx, yIdx]
+                   for app in app_ids
+                   for lod in range(scene_UI.LODS)
+                   for xIdx in range(scene_UI.COLS)
+                   for yIdx in range(scene_UI.ROWS))
+
+# 5.beta: 
+coupledLodProximityTerm = sum(
+    # normalized_dist high，low lod big pan
+    # normalized_dist low， low lod small pan
+    -(normalized_dist * (2 - lod)) * x[app, lod, xIdx, yIdx]
+    for app in app_ids
+    for lod in range(scene_UI.LODS)
+    for xIdx in range(scene_UI.COLS)
+    for yIdx in range(scene_UI.ROWS)
+)
+########################################################
+########################################################
+
 print(scene_UI.get_info())
 
-# TODO: This is just a random term. You need to define the objective function (see comment above) and remove this.
-# Clearly, this is a terrible version as it does not account for overlaps of the elements with other elements, the "Apps" button or the questions panel.
-# It is only here show a simple example of how to set up the model and run the optimization.
 randomTerm = 0.0
 for app in app_ids:
     for lod, xIdx, yIdx in itertools.product(range(scene_UI.LODS), range(scene_UI.COLS), range(scene_UI.ROWS)):
         randomTerm += random.uniform(-1,1) * x[app, lod, xIdx, yIdx]
 
-# Setting up the model in Gurobi and optimizing it
-m.ModelSense = GRB.MAXIMIZE # depending on your objective function formulation, you may want to use GRB.MINIMIZE
-m.setObjectiveN(randomTerm, index=0, weight=1)
+m.ModelSense = GRB.MAXIMIZE
+m.setObjective(
+    rewards[0]*relevanceTerm + 
+    rewards[1]*questionProximityTerm +
+    rewards[2]*lodRewardTerm +
+    rewards[3]*coupledLodProximityTerm +
+    roiAvoidanceTerm,
+    GRB.MAXIMIZE
+)
 m.update()
 m.optimize() 
 
-# Retrieving optimization results
 optimal_results = []
 for app in app_ids:
     for lod, xIdx, yIdx in itertools.product(range(scene_UI.LODS), range(scene_UI.COLS), range(scene_UI.ROWS)):
@@ -76,6 +296,4 @@ for app in app_ids:
             })
             break 
 
-# Starts an application with the optimized interface
-# The UI knows how to display the optimal_results it receives
 scene_UI.init_app(optimal_results)

@@ -51,13 +51,14 @@ for e in elements:
     for p in positions: 
        x[e,p] = m.addVar(vtype=GRB.BINARY, name="x_%s_%i" %(e, p))
 
-# Define constraints
+################## Define constraints ######################
 # Each position must be assigned one element 
 for p in positions: 
    m.addConstr(sum(x[e,p] for e in elements) == 1, "uniqueness_constraint_%i"%p)
 # Each element can only be assigned to one position 
 for e in elements:
    m.addConstr(sum(x[e,p] for p in positions) == 1, "uniqueness_constraint_%s"%e)
+############################################################
 
 # Define objective
 w_f = 0.5
@@ -65,11 +66,12 @@ w_r = 0.5
 cost = sum((w_f * frequency[e] + w_r * reading_costs[e]) * distances[p] * x[e, p]
                 for e in elements 
                 for p in positions)
-
+############################################################
 m.update()
 m.setObjective(cost, GRB.MINIMIZE)
 
 m.optimize()
+############################################################
 
 layout = {}
 for v in m.getVars():
