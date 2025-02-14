@@ -21,24 +21,64 @@ class ListAppUI:
     def __init__(self, parent, app):
         self.parent = parent
         self.app = app
-        self.i = 0 
-        self.frame = tk.Label(self.parent, text=f"{self.app.name}: {self.app.info[self.i]}", height=5, anchor="w", justify="left", borderwidth=1.5, highlightcolor="grey", relief="solid")
-        self.frame.pack(pady=2, padx=10, fill="x", expand=True)
+        self.i = 0
+        
+        # 创建容器Frame，设置横向填充
+        self.container = tk.Frame(
+            self.parent, 
+            borderwidth=1.5, 
+            highlightcolor="grey", 
+            relief="solid"
+        )
+        self.container.pack(pady=2, padx=10, fill="x", expand=True)
+        
+        # 配置Grid布局以更好控制扩展
+        self.container.grid_columnconfigure(0, weight=1)  # 允许列扩展
+        
+        # 标题标签使用Grid布局并横向填充
+        self.title_label = tk.Label(
+            self.container,
+            text=f"{self.app.name}:",
+            font=("Arial", 10, "bold"),
+            fg='blue',
+            background='lightgrey',
+            anchor="w",
+            justify="left",
+            padx=5,
+            pady=2
+        )
+        self.title_label.grid(row=0, column=0, sticky="ew")  # 横向填充
 
-        #self.frame.bind("<Button-1>", self.toggle_info)
-        self.frame.bind("<Button-1>", self.delayed_toggle_info)
+        # 内容标签使用Grid布局并横向填充
+        self.content_label = tk.Label(
+            self.container,
+            text=self.app.info[self.i],
+            font=("Arial", 10),
+            anchor="w",
+            justify="left",
+            padx=5
+        )
+        self.content_label.grid(row=1, column=0, sticky="ew")  # 横向填充
+        
+        # 事件绑定保持不变
+        self.container.bind("<Button-1>", self.delayed_toggle_info)
+        self.title_label.bind("<Button-1>", self.delayed_toggle_info)
+        self.content_label.bind("<Button-1>", self.delayed_toggle_info)
+
 
     def delayed_toggle_info(self, event):
-        self.frame.unbind("<Button-1>") 
-        self.frame.after(DELAY_ALL, self.toggle_info)
+        self.container.unbind("<Button-1>")
+        self.title_label.unbind("<Button-1>")
+        self.content_label.unbind("<Button-1>")
+        self.container.after(DELAY_ALL, self.toggle_info)
 
-    #def toggle_info(self, event):
     def toggle_info(self):
         self.i = (self.i + 1) % len(self.app.info)
-        self.frame.config(text=f"{self.app.name}: {self.app.info[self.i]}")
+        self.content_label.config(text=self.app.info[self.i])
+        self.container.bind("<Button-1>", self.delayed_toggle_info)
+        self.title_label.bind("<Button-1>", self.delayed_toggle_info)
+        self.content_label.bind("<Button-1>", self.delayed_toggle_info)
 
-        # re-bind click
-        self.frame.bind("<Button-1>", self.delayed_toggle_info)
 
 class MainAppUI:
     def __init__(self, parent, app, lod, placement, ui):
@@ -236,11 +276,12 @@ class UI:
     QUESTIONS_WIDTH, QUESTIONS_HEIGHT = 200, 200
     BTN_ALL_POS = [10, 10]
     BTN_ALL_WIDTH, BTN_ALL_HEIGHT = 80, 80
-    ALL_WIDTH, ALL_HEIGHT = 700, 500
+    ALL_WIDTH, ALL_HEIGHT = 180, 500
     POI_RADIUS_MIN, POI_RADIUS_MAX = 50, 200
     POI_PLACEMENT_PADDING = 100
+    ALL_BORDER = 1.5
 
-    def __init__(self, path="scene.json"):
+    def __init__(self, path="scene-3.json"):
         self.load_scene(path)
         self.qi = 0 
         self.overlapping_poi = 0
@@ -323,25 +364,51 @@ class UI:
                 self.is_ui_overlap(name, placement, lod)
 
     def open_all(self):
-        if not self.frame_all.winfo_ismapped():
-            self.frame_all.place(relx=0.5, rely=0.5, anchor="center") 
-            
-        self.frame_all.lift()
-        self.opening_all = False  # 重置状态
-        self.btn_all.config(state="normal")  # 确保按钮重新启用
+        try:
+            if not self.frame_all.winfo_ismapped():
+                self.frame_all.place(relx=0.5, rely=0.5, anchor="center")
+            self.frame_all.lift()
+        except Exception as e:
+            print(f"Error opening apps panel: {e}")
+            # 发生错误时强制重置状态
+            self.opening_all = False
+            self.btn_all.config(state="normal")
+        finally:
+            # 更新状态标志和按钮状态
+            self.opening_all = False
+            self.btn_all.config(state="normal")
+
+    def close_all(self):
+        # 销毁组件并释放资源
+        try:
+            if self.frame_all.winfo_exists():
+                self.frame_all.place_forget()
+                self.frame_all.destroy()
+        except Exception as e:
+            print(f"Error closing apps panel: {e}")
+        finally:
+            # 重新初始化应用列表
+            self.init_all_panel()
+            self.opening_all = False
+            self.btn_all.config(state="normal")
+
 
 
     def delayed_open_all(self):
-        if not self.opening_all:
-            self.opening_all = True
-            self.btn_all.config(state="disabled")
-            self.root.after(DELAY_ALL, self.open_all)
+        try:
+            if not self.opening_all:
+                self.opening_all = True
+                self.btn_all.config(state="disabled")
+                self.root.after(DELAY_ALL, self.open_all)
+        except Exception as e:
+            print(f"Error in delayed_open_all: {e}")
+            # 发生错误时强制重置状态
+            self.opening_all = False
+            self.btn_all.config(state="normal")
 
-    def close_all(self):
-        self.frame_all.place_forget()
 
     def init_all_panel(self):
-        self.frame_all = tk.Frame(self.root, width=UI.ALL_WIDTH, height=UI.ALL_HEIGHT)
+        self.frame_all = tk.Frame(self.root, width=UI.ALL_WIDTH, height=UI.ALL_HEIGHT, borderwidth = UI.ALL_BORDER, relief="solid", )
         self.frame_all.pack_propagate(False)
         
         # Close button

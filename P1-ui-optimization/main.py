@@ -17,7 +17,7 @@ from sklearn.preprocessing import MinMaxScaler  # 归一化工具
 #############   objective func weights   ###############
 ########################################################
 
-rewards = [1, 1, 1]
+rewards = [1, 3, 1]
 poi_pan = 0.3 
 is_auto_rele = True
 
@@ -268,7 +268,8 @@ for app in app_ids:
                 dist_to_questions = np.sqrt(np.sum((pos - q_center)**2))
                 normalized_dist = ((dist_to_questions - norm_params['q_min_dist']) / 
                                 (norm_params['q_max_dist'] - norm_params['q_min_dist']))
-                questionProximityTerm += (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
+                # questionProximityTerm += (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
+                questionProximityTerm += rele[app] * (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
 
 
 # 2. Penalty for overlapping with red dot (ROI)
