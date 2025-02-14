@@ -6,29 +6,33 @@ import random
 import sys
 import numpy as np
 import os
+import re
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from sklearn.preprocessing import MinMaxScaler  # 归一化工具
 
 ########################################################
 #############   objective func weights   ###############
 ########################################################
 
-rewards = [2, 1, 1, 0]
-poi_pan = 0.5 
+rewards = [1, 1, 1]
+poi_pan = 0.3 
+is_auto_rele = True
 
 '''
  m.setObjective(
     rewards[0]*relevanceTerm + 
     rewards[1]*questionProximityTerm +
     rewards[2]*lodRewardTerm +
-    rewards[3]*coupledLodProximityTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE
 )
 '''
-
+########################################################
+#############    some todos and hints    ###############
+########################################################
 ##### TODO: DEFINE OBJECTIVES AND CONSTRAINTS #####
 '''
 Input into interface.init_app() should be as follows:
@@ -51,7 +55,7 @@ Potentially relevant information can be obtained by calling scene_UI.get_info(),
 '''
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-scene_path = "scenes/scene-3.json"
+scene_path = "scenes/scene-2.json"
 if len(sys.argv) >= 2:
     scene_path = sys.argv[1]
 
@@ -60,41 +64,46 @@ app_ids = list(scene_UI.apps.keys())
 
 
 ########################################################
-#############    helper   ################# 
+#############           helper         ################# 
 ########################################################
 
 
 def calculate_automated_relevance(scene):
+    custom_stop_words = ['current', 'today']
+    all_stop_words = list(ENGLISH_STOP_WORDS) + custom_stop_words
+
     relevance = {}
     scores_list = []
-
     for app_name, app in scene.apps.items():
-        app_info = " ".join([app.get_lod(i) for i in range(len(app.info))])
-        all_texts = [app_info] + [q["q"] for q in scene.questions]
-
-        # TF-IDF 计算，并去除停用词
-        vectorizer = TfidfVectorizer(stop_words='english')
+        app_infos = []
+        seen = set()
+        for i in range(len(app.info)):
+            # retrieve raw
+            raw_info = app.get_lod(i)
+            # split
+        for line in raw_info.split('\n'):
+            clean_info = re.sub(r'\([^)]*\)|\d|:', '', line).strip()
+            if clean_info not in seen:
+                app_infos.append(clean_info)
+                seen.add(clean_info)
+                
+        app_info = " ".join(app_infos) + " " + app_name
+        # print(f'{app_name}\n  {app_info} \n---------')
+        all_questions = [q["q"] for q in scene.questions] + [q["app"] for q in scene.questions]
+        questions_text = " ".join(all_questions)
+        ##  calculate similarity ##
+        all_texts = [app_info, questions_text]
+        vectorizer = TfidfVectorizer(stop_words=all_stop_words)
         tfidf_matrix = vectorizer.fit_transform(all_texts)
-
-        # 计算余弦相似度
-        app_vector = tfidf_matrix[0]
-        question_vectors = tfidf_matrix[1:]
-        scores = cosine_similarity(app_vector, question_vectors).flatten()
-
-        mean_score = scores.mean()
-        scores_list.append((app_name, mean_score))  # 先存起来，稍后归一化
-    
-    # 归一化处理
+        similarity_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2]).flatten()[0]
+        scores_list.append((app_name, similarity_score))
+    # normalization
     if scores_list:
         scaler = MinMaxScaler()
         normalized_scores = scaler.fit_transform([[score] for _, score in scores_list])
-        
-        # 重新存储归一化分数
         for i, (app_name, _) in enumerate(scores_list):
             relevance[app_name] = normalized_scores[i, 0]
-
     return relevance
-
 
 def normalize_terms():
     # 1// question proximity: max and min distance
@@ -126,6 +135,7 @@ def normalize_terms():
     }
 
 ########################################################
+#############        init some info      ###############
 ########################################################
 
 info = scene_UI.get_info()
@@ -143,10 +153,10 @@ bsize = info["btn_all_size"]
 qpos = info["questions_pos"]
 qsize = info["questions_size"] 
 
-rele = calculate_automated_relevance(scene_UI)
+rele = calculate_automated_relevance(scene_UI) if is_auto_rele else info["relevance"]
+sorted_rele = dict(sorted(rele.items(), key=lambda item: item[1], reverse=True))
+print(sorted_rele)  
 
-# print(f'####################' + '/n' + rele + '/n' + '###################')
-print(rele)
 
 ########################################################
 #############        init model      ################### 
@@ -195,7 +205,6 @@ for app in app_ids:
                         pos[1] < bpos[1] + bsize[1] and pos[1] + grid_a > bpos[1]):
                         m.addConstr(x[app, lod, xIdx, yIdx] == 0)
                         break  # 一旦发现重叠就可以停止检查其他位置
-
 
 #  4 elements placed
 m.addConstr(sum(x[app, lod, xIdx, yIdx] 
@@ -294,16 +303,8 @@ lodRewardTerm = sum(rele[app] * (lod + 1) / 3 * x[app, lod, xIdx, yIdx]
                    for xIdx in range(scene_UI.COLS)
                    for yIdx in range(scene_UI.ROWS))
 
-# 5.beta: cross
-coupledLodProximityTerm = sum(
-    # normalized_dist high，low lod big pan
-    # normalized_dist low， low lod small pan
-    -(normalized_dist * (2 - lod)) * x[app, lod, xIdx, yIdx]
-    for app in app_ids
-    for lod in range(scene_UI.LODS)
-    for xIdx in range(scene_UI.COLS)
-    for yIdx in range(scene_UI.ROWS)
-)
+
+########################################################
 ########################################################
 ########################################################
 
@@ -319,7 +320,6 @@ m.setObjective(
     rewards[0]*relevanceTerm + 
     rewards[1]*questionProximityTerm +
     rewards[2]*lodRewardTerm +
-    rewards[3]*coupledLodProximityTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE
 )

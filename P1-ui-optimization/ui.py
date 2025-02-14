@@ -9,8 +9,9 @@ from datetime import datetime
 import time
 import random
 import re
-
+import os
 from app import App
+from PIL import Image, ImageDraw, ImageFilter
 
 # Constants for delay. Do not change
 DELAY_LOD = 150
@@ -21,7 +22,7 @@ class ListAppUI:
         self.parent = parent
         self.app = app
         self.i = 0 
-        self.frame = tk.Label(self.parent, text=f"{self.app.name}: {self.app.info[self.i]}", height=5, anchor="w", justify="left", borderwidth=1.5, relief="solid")
+        self.frame = tk.Label(self.parent, text=f"{self.app.name}: {self.app.info[self.i]}", height=5, anchor="w", justify="left", borderwidth=1.5, highlightcolor="grey", relief="solid")
         self.frame.pack(pady=2, padx=10, fill="x", expand=True)
 
         #self.frame.bind("<Button-1>", self.toggle_info)
@@ -52,7 +53,7 @@ class MainAppUI:
         colspan = 1 if lod < 1 else 2
 
 
-        self.frame = tk.Frame(self.parent, borderwidth=1.5, relief="solid")
+        self.frame = tk.Frame(self.parent, borderwidth=1.5, highlightcolor='grey', highlightbackground='grey', relief="solid")
         self.frame.grid(
             column=self.placement[0], 
             row=self.placement[1], 
@@ -67,7 +68,7 @@ class MainAppUI:
         self.title_label = tk.Label(
             self.frame,
             text=f"{self.app.name}:",
-            font=("Arial", 10, "bold",),
+            font=("Arial", 12, "bold",),
             fg = 'blue',
             background='lightgrey',
             anchor="w",
@@ -110,12 +111,11 @@ class MainAppUI:
         formatted_lines = []
         for line in lines:
             if ':' in line:
-                # 将每行按第一个冒号分割，最多分割一次
                 parts = line.split(':', 1)
-                formatted_lines.append(f"{parts[0]}:\n{parts[1]}")
+                formatted_lines.append(f"◍ {parts[0]}:\n└——{parts[1]}")
             else:
                 formatted_lines.append(line)
-        return '\n\n'.join(formatted_lines)
+        return '\n'.join(formatted_lines)
 
     def delayed_update_lod(self, event):
         self.frame.unbind("<Button-1>")
@@ -160,7 +160,10 @@ class UILogger:
         self.start_time = time.time()
         self.trial_end = self.start_time
         timestamp = datetime.now().strftime("%d-%H-%M")
-        self.filename = f"{timestamp}.csv"
+        if not os.path.exists("logs"):
+            os.makedirs("logs")
+        
+        self.filename = os.path.join("logs", f"{timestamp}.csv")
 
         with open(self.filename, mode="w", newline="") as file:
             writer = csv.writer(file)
@@ -322,10 +325,11 @@ class UI:
     def open_all(self):
         if not self.frame_all.winfo_ismapped():
             self.frame_all.place(relx=0.5, rely=0.5, anchor="center") 
-        
+            
         self.frame_all.lift()
-        self.opening_all = False
-        self.btn_all.config(state="normal")
+        self.opening_all = False  # 重置状态
+        self.btn_all.config(state="normal")  # 确保按钮重新启用
+
 
     def delayed_open_all(self):
         if not self.opening_all:
@@ -392,7 +396,6 @@ class UI:
             self.logging.log_summary(self.questions, self.overlapping_poi)
             sys.exit(0)
 
-        # 修改这一行:使用label_question而不是frame_question
         self.label_question.config(text=self.questions[self.qi]["q"])
 
 
@@ -402,6 +405,7 @@ class UI:
         self.label_question = tk.Label(self.frame_question, 
                 text=self.questions[self.qi]["q"], 
                 wraplength=180,
+                fg = 'darkblue',
                 padx=10, 
                 pady=10)
         self.entry_answer = tk.Entry(self.frame_question, width=20)
@@ -411,6 +415,7 @@ class UI:
         self.entry_answer.pack()
         self.btn_submit.pack()
         self.frame_question.place(x=self.q_pos[0], y=self.q_pos[1], anchor="nw")
+        self.color = 'darkblue'
 
 
     def load_scene(self, path="scene.json", shuffle_questions=True):
@@ -487,13 +492,32 @@ class UI:
             if app not in self.relevance:
                 self.relevance[app] = 0.0
 
-
     def debug_draw_poi(self): 
+        img = Image.open(self.env_path)
+        img = img.resize((UI.WINDOW_WIDTH, UI.WINDOW_HEIGHT), Image.LANCZOS)
+
+        blurred = img.filter(ImageFilter.GaussianBlur(radius=10))
+        
+        mask = Image.new('L', (UI.WINDOW_WIDTH, UI.WINDOW_HEIGHT), 0)
+        draw = ImageDraw.Draw(mask)
+        
         x0 = self.poi_pos[0] - self.poi_size
         y0 = self.poi_pos[1] - self.poi_size
         x1 = self.poi_pos[0] + self.poi_size
         y1 = self.poi_pos[1] + self.poi_size
-        self.env_canvas.create_oval(x0, y0, x1, y1, outline="red", width=5)
+        
+        draw.ellipse([x0, y0, x1, y1], fill=255)
+        mask = mask.filter(ImageFilter.GaussianBlur(radius=30)) 
+        
+        # merge
+        final = Image.composite(img, blurred, mask)
+        
+        # transform to photoimage and display
+        self.env_img = ImageTk.PhotoImage(final)
+        self.env_canvas.create_image(0, 0, anchor="nw", image=self.env_img)
+
+        self.env_canvas.create_oval(x0, y0, x1, y1, outline="grey", width=0.5, dash=5)
+
 
     def circle_rectangle_overlap(self, circle_x, circle_y, circle_radius, rect_x, rect_y, rect_width, rect_height):
         # Find the closest point on the rectangle to the circle's center
