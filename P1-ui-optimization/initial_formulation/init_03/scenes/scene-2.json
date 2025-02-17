@@ -1,0 +1,63 @@
+{
+    "env_path": "scenes/backgrounds/ghc.jpg",
+    "app_path": "scenes/apps/apps-2.json",
+    "questions": [
+        {
+            "q": "What is the play time (min)?",
+            "app": "gaming",
+            "lod": 2
+        },
+        {
+            "q": "What is the current level?",
+            "app": "gaming",
+            "lod": 1
+        },
+        {
+            "q": "What is the high score?",
+            "app": "gaming",
+            "lod": 0
+        },
+        {
+            "q": "What is the break time (min)?",
+            "app": "productivity",
+            "lod": 2
+        },
+        {
+            "q": "What is the focus time (min)?",
+            "app": "productivity",
+            "lod": 1
+        },
+        {
+            "q": "What is the travel distance (km)?",
+            "app": "transportation",
+            "lod": 0
+        },
+        {
+            "q": "What is the available seats?",
+            "app": "cinema",
+            "lod": 2
+        },
+        {
+            "q": "What is the wind (km/h)?",
+            "app": "weather",
+            "lod": 2
+        },
+        {
+            "q": "What is the precipitation (%)?",
+            "app": "weather",
+            "lod": 1
+        },
+        {
+            "q": "What is the temperature (°C)?",
+            "app": "weather",
+            "lod": 0
+        }
+    ],
+    "relevance": {
+        "gaming": 1.0,
+        "weather": 1.0,
+        "productivity": 0.5,
+        "transportation": 0.2,
+        "cinema": 0.2
+    }
+}

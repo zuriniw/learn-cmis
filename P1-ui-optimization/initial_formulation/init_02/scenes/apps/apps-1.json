@@ -1,0 +1,255 @@
+[
+    {
+        "app": "weather",
+        "info": [
+            {
+                "label": "Temperature (°C):",
+                "type": "int",
+                "min": -10,
+                "max": 30
+            },
+            {
+                "label": "Precipitation (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Wind (km/h):",
+                "type": "int",
+                "min": 0,
+                "max": 20
+            }
+        ]
+    },
+    {
+        "app": "time",
+        "info": [
+            {
+                "label": "Current (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "AoE (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Alarm (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "stocks",
+        "info": [
+            {
+                "label": "Apple (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            },
+            {
+                "label": "Tesla (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            },
+            {
+                "label": "Amazon (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            }
+        ]
+    },
+    {
+        "app": "fitness",
+        "info": [
+            {
+                "label": "Steps Today:",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            },
+            {
+                "label": "Calories Burned:",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            },
+            {
+                "label": "Active Minutes:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "events",
+        "info": [
+            {
+                "label": "Yoga Class (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Lunch with Friends (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Meeting (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "travel",
+        "info": [
+            {
+                "label": "Check-In Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Flight Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Estimated Arrival Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "music",
+        "info": [
+            {
+                "label": "Number of Songs Queued:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Current Time in Song (s):",
+                "type": "int",
+                "min": 0,
+                "max": 600
+            },
+            {
+                "label": "Playlist Length (min):",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "health",
+        "info": [
+            {
+                "label": "Heart Rate (bpm):",
+                "type": "int",
+                "min": 40,
+                "max": 180
+            },
+            {
+                "label": "Sleep Duration (min):",
+                "type": "int",
+                "min": 0,
+                "max": 720
+            },
+            {
+                "label": "Hydration (ml):",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            }
+        ]
+    },
+    {
+        "app": "recipe",
+        "info": [
+            {
+                "label": "Prep Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 240
+            },
+            {
+                "label": "Cook Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 240
+            },
+            {
+                "label": "Servings:",
+                "type": "int",
+                "min": 1,
+                "max": 20
+            }
+        ]
+    },
+    {
+        "app": "smarthome",
+        "info": [
+            {
+                "label": "Lights Brightness (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Thermostat Temperature (°C):",
+                "type": "int",
+                "min": 10,
+                "max": 30
+            },
+            {
+                "label": "Security Cameras Active Hours:",
+                "type": "int",
+                "min": 0,
+                "max": 24
+            }
+        ]
+    },
+    {
+        "app": "finance",
+        "info": [
+            {
+                "label": "Account Balance (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 100000
+            },
+            {
+                "label": "Monthly Income (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            },
+            {
+                "label": "Savings Goal (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    }    
+]

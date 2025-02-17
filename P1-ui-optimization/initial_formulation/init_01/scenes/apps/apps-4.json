@@ -1,0 +1,255 @@
+[
+    {
+        "app": "weather",
+        "info": [
+            {
+                "label": "Humidity (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "UV Index:",
+                "type": "int",
+                "min": 0,
+                "max": 11
+            },
+            {
+                "label": "Visibility (km):",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            }
+        ]
+    },
+    {
+        "app": "calendar",
+        "info": [
+            {
+                "label": "Events Scheduled:",
+                "type": "int",
+                "min": 0,
+                "max": 20
+            },
+            {
+                "label": "Free Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            },
+            {
+                "label": "Next Event Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "car",
+        "info": [
+            {
+                "label": "Oil Life (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Tire Pressure (PSI):",
+                "type": "int",
+                "min": 20,
+                "max": 40
+            },
+            {
+                "label": "Battery Voltage (V):",
+                "type": "int",
+                "min": 10,
+                "max": 15
+            }
+        ]
+    },
+    {
+        "app": "movie",
+        "info": [
+            {
+                "label": "Movies Watched:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Watch Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Next Show Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "meal",
+        "info": [
+            {
+                "label": "Meals Planned:",
+                "type": "int",
+                "min": 0,
+                "max": 21
+            },
+            {
+                "label": "Calories per Meal:",
+                "type": "int",
+                "min": 0,
+                "max": 1500
+            },
+            {
+                "label": "Preparation Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 180
+            }
+        ]
+    },
+    {
+        "app": "language",
+        "info": [
+            {
+                "label": "Words Learned:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Practice Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            },
+            {
+                "label": "Lessons Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "budget",
+        "info": [
+            {
+                "label": "Total Expenses (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 100000
+            },
+            {
+                "label": "Income (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            },
+            {
+                "label": "Savings (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "app": "bike",
+        "info": [
+            {
+                "label": "Distance Traveled (km):",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Ride Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 480
+            },
+            {
+                "label": "Average Speed (km/h):",
+                "type": "int",
+                "min": 0,
+                "max": 60
+            }
+        ]
+    },
+    {
+        "app": "workout",
+        "info": [
+            {
+                "label": "Workouts Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Total Reps:",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            },
+            {
+                "label": "Workout Duration (min):",
+                "type": "int",
+                "min": 0,
+                "max": 180
+            }
+        ]
+    },
+    {
+        "app": "news",
+        "info": [
+            {
+                "label": "Articles Read:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Sources Followed:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Reading Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 300
+            }
+        ]
+    },
+    {
+        "app": "travel",
+        "info": [
+            {
+                "label": "Countries Visited:",
+                "type": "int",
+                "min": 0,
+                "max": 195
+            },
+            {
+                "label": "Travel Days:",
+                "type": "int",
+                "min": 0,
+                "max": 3650
+            },
+            {
+                "label": "Photos Taken:",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            }
+        ]
+    }
+]

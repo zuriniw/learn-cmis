@@ -1,0 +1,255 @@
+[
+    {
+        "app": "gaming",
+        "info": [
+            {
+                "label": "High Score:",
+                "type": "int",
+                "min": 0,
+                "max": 100000
+            },
+            {
+                "label": "Current Level:",
+                "type": "int",
+                "min": 1,
+                "max": 100
+            },
+            {
+                "label": "Play Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            }
+        ]
+    },
+    {
+        "app": "productivity",
+        "info": [
+            {
+                "label": "Tasks Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Focus Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 480
+            },
+            {
+                "label": "Break Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 120
+            }
+        ]
+    },
+    {
+        "app": "transportation",
+        "info": [
+            {
+                "label": "Travel Distance (km):",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Fuel Level (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Arrival Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "shopping",
+        "info": [
+            {
+                "label": "Cart Items:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Total Price (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Discount (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "app": "cinema",
+        "info": [
+            {
+                "label": "Showtime (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Duration (min):",
+                "type": "int",
+                "min": 60,
+                "max": 240
+            },
+            {
+                "label": "Available Seats:",
+                "type": "int",
+                "min": 0,
+                "max": 300
+            }
+        ]
+    },
+    {
+        "app": "learning",
+        "info": [
+            {
+                "label": "Modules Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 20
+            },
+            {
+                "label": "Study Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 600
+            },
+            {
+                "label": "Quiz Score (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "app": "conference",
+        "info": [
+            {
+                "label": "Start Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Duration (min):",
+                "type": "int",
+                "min": 0,
+                "max": 480
+            },
+            {
+                "label": "Attendees:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "library",
+        "info": [
+            {
+                "label": "Books Borrowed:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Reading Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            },
+            {
+                "label": "Return Due Date (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "weather",
+        "info": [
+            {
+                "label": "Temperature (°C):",
+                "type": "int",
+                "min": -10,
+                "max": 30
+            },
+            {
+                "label": "Precipitation (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Wind (km/h):",
+                "type": "int",
+                "min": 0,
+                "max": 20
+            }
+        ]
+    },
+    {
+        "app": "time",
+        "info": [
+            {
+                "label": "Current (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "AoE (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Alarm (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "travel",
+        "info": [
+            {
+                "label": "Check-In Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Flight Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Estimated Arrival Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    }
+]

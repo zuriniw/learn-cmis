@@ -1,0 +1,63 @@
+{
+    "env_path": "scenes/backgrounds/tepper.jpg",
+    "app_path": "scenes/apps/apps-3.json",
+    "questions": [
+        {
+            "q": "How much storage have you used on your camera?",
+            "app": "photography",
+            "lod": 2
+        },
+        {
+            "q": "What is your camera battery level?",
+            "app": "photography",
+            "lod": 1
+        },
+        {
+            "q": "How many photos have you taken?",
+            "app": "photography",
+            "lod": 0
+        },
+        {
+            "q": "How many hours of sunlight has your garden been exposed to today?",
+            "app": "garden",
+            "lod": 1
+        },
+        {
+            "q": "What is the plant count in your garden?",
+            "app": "garden",
+            "lod": 2
+        },
+        {
+            "q": "What is the current meditation session duration?",
+            "app": "meditation",
+            "lod": 0
+        },
+        {
+            "q": "How many meditation sessions have you completed?",
+            "app": "meditation",
+            "lod": 2
+        },
+        {
+            "q": "When is the feeding time?",
+            "app": "pet-care",
+            "lod": 0
+        },
+        {
+            "q": "How long have you walked your pet today?",
+            "app": "pet-care",
+            "lod": 1
+        },
+        {
+            "q": "What is the cooking temperature?",
+            "app": "cooking",
+            "lod": 1
+        }
+    ],
+    "relevance": {
+        "photography": 1.0,
+        "garden": 0.5,
+        "meditation": 0.5,
+        "pet-care": 0.5,
+        "cooking": 0.2
+    }
+}

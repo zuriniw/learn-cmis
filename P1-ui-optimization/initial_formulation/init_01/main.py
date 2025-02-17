@@ -55,7 +55,7 @@ Potentially relevant information can be obtained by calling scene_UI.get_info(),
 '''
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-scene_path = "scenes/scene-1.json"
+scene_path = "scenes/scene-3.json"
 if len(sys.argv) >= 2:
     scene_path = sys.argv[1]
 
@@ -285,8 +285,7 @@ for app in app_ids:
                 dist_to_questions = np.sqrt(np.sum((pos - q_center)**2))
                 normalized_dist = ((dist_to_questions - norm_params['q_min_dist']) / 
                                 (norm_params['q_max_dist'] - norm_params['q_min_dist']))
-                # questionProximityTerm += (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
-                questionProximityTerm += rele[app] * (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
+                questionProximityTerm -= normalized_dist * x[app, lod, xIdx, yIdx]
 
 # 2. Relevance term
 relevanceTerm = sum(rele[app] * x[app, lod, xIdx, yIdx]

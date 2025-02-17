@@ -1,0 +1,62 @@
+{
+    "env_path": "scenes/backgrounds/cuc.jpg",
+    "app_path": "scenes/apps/apps-4.json",
+    "questions": [
+        {
+            "q": "What is the humidity?",
+            "app": "weather",
+            "lod": 0
+        },
+        {
+            "q": "What is the uv index?",
+            "app": "weather",
+            "lod": 1
+        },
+        {
+            "q": "What is the visibility?",
+            "app": "weather",
+            "lod": 2
+        },
+        {
+            "q": "What is the next event time?",
+            "app": "calendar",
+            "lod": 2
+        },
+        {
+            "q": "How many event have you scheduled?",
+            "app": "calendar",
+            "lod": 0
+        },
+        {
+            "q": "How much free time do you have?",
+            "app": "calendar",
+            "lod": 1
+        },
+        {
+            "q": "What is the tire pressure on your car?",
+            "app": "car",
+            "lod": 1
+        },
+        {
+            "q": "What is the battery voltage on your car?",
+            "app": "car",
+            "lod": 2
+        },
+        {
+            "q": "What is the oil life on your car?",
+            "app": "car",
+            "lod": 0
+        },
+        {
+            "q": "What is the next movie show time?",
+            "app": "movie",
+            "lod": 2
+        }
+    ],
+    "relevance": {
+        "weather": 1.0,
+        "calendar": 1.0,
+        "car": 1.0,
+        "movie": 0.2
+    }
+}

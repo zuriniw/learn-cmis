@@ -1,0 +1,255 @@
+[
+    {
+        "app": "photography",
+        "info": [
+            {
+                "label": "Photos Taken:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Battery Level (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Storage Used (MB):",
+                "type": "int",
+                "min": 0,
+                "max": 64000
+            }
+        ]
+    },
+    {
+        "app": "garden",
+        "info": [
+            {
+                "label": "Watering Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 120
+            },
+            {
+                "label": "Sunlight Exposure (hrs):",
+                "type": "int",
+                "min": 0,
+                "max": 12
+            },
+            {
+                "label": "Plant Count:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "meditation",
+        "info": [
+            {
+                "label": "Session Duration (min):",
+                "type": "int",
+                "min": 0,
+                "max": 180
+            },
+            {
+                "label": "Mindfulness Score (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Sessions Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 365
+            }
+        ]
+    },
+    {
+        "app": "pet-care",
+        "info": [
+            {
+                "label": "Feeding Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            },
+            {
+                "label": "Walk Duration (min):",
+                "type": "int",
+                "min": 0,
+                "max": 120
+            },
+            {
+                "label": "Play Sessions:",
+                "type": "int",
+                "min": 0,
+                "max": 10
+            }
+        ]
+    },
+    {
+        "app": "cooking",
+        "info": [
+            {
+                "label": "Preparation Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 240
+            },
+            {
+                "label": "Cooking Temperature (°C):",
+                "type": "int",
+                "min": 0,
+                "max": 300
+            },
+            {
+                "label": "Ingredients Count:",
+                "type": "int",
+                "min": 1,
+                "max": 50
+            }
+        ]
+    },
+    {
+        "app": "journal",
+        "info": [
+            {
+                "label": "Entries Written:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Writing Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 120
+            },
+            {
+                "label": "Mood Score (1-10):",
+                "type": "int",
+                "min": 1,
+                "max": 10
+            }
+        ]
+    },
+    {
+        "app": "crafting",
+        "info": [
+            {
+                "label": "Projects Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Materials Used:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Crafting Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 600
+            }
+        ]
+    },
+    {
+        "app": "music",
+        "info": [
+            {
+                "label": "Number of Songs Queued:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Current Time in Song (s):",
+                "type": "int",
+                "min": 0,
+                "max": 600
+            },
+            {
+                "label": "Playlist Length (min):",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "productivity",
+        "info": [
+            {
+                "label": "Tasks Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Focus Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 480
+            },
+            {
+                "label": "Break Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 120
+            }
+        ]
+    },
+    {
+        "app": "transportation",
+        "info": [
+            {
+                "label": "Travel Distance (km):",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Fuel Level (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Arrival Time (hhmm):",
+                "type": "time",
+                "min": 0,
+                "max": 2359
+            }
+        ]
+    },
+    {
+        "app": "shopping",
+        "info": [
+            {
+                "label": "Cart Items:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Total Price (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Discount (%):",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    }
+]
