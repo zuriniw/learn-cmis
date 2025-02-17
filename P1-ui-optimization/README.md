@@ -28,7 +28,7 @@ Python interpreter.
 
 If your development environment is set up correctly, you should be able to run `main.py`, which will open a window as follows: 
 
-![run](run.PNG)
+![run](run.png)
 
 
 ## Code structure
