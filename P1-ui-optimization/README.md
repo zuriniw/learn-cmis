@@ -32,9 +32,8 @@ If your development environment is set up correctly, you should be able to run `
 
 
 ## Code structure
-- `main.py` is the file that includes the final formulation of the optimization algorithm. The scene, auto calculation of relevance and weights of each term can be switched or tweaked in a handy way here.
+- `main.py` is the file that includes the **final formulation** of the optimization algorithm. The scene, auto calculation of relevance and weights of each term can be switched or tweaked in a handy way here. They are set as default parameters which have been tested and can behave good.
 - `ui.py` contains the code for the user interface. The viusal has been adjusted in this file.
-- `app.py` handles the _content_ for the UI elements. It reads the contents of the application elements and creates the data by randomizing the content between the given bounds.
 
 
 ### Data structure
@@ -42,8 +41,9 @@ The `scene` folder contains the data that is rendered.
 - `scene-N.json` defines the questions, path to the applications and the relevance.
 - `apps/apps-N.json` defines the contents for the applications that you will optimize.
 
-### Data analysis
+
+## Data analysis
 in the `data_analysis` folder there are scripts to visualize user test data and to compare the auto-calculated relevance and manually-labeled relevance.
 
-### Initial Formulation
+## Initial Formulation
 in the `initial_formulation` folder there are 3 version of legacy formulation for user tests.
