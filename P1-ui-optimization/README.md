@@ -28,7 +28,7 @@ Python interpreter.
 
 If your development environment is set up correctly, you should be able to run `main.py`, which will open a window as follows: 
 
-![run](run.PNG)
+![run](run.png)
 
 
 ## Code structure
@@ -45,5 +45,10 @@ The `scene` folder contains the data that is rendered.
 ## Data analysis
 in the `data_analysis` folder there are scripts to visualize user test data and to compare the auto-calculated relevance and manually-labeled relevance.
 
+<<<<<<< HEAD
 ## Initial Formulation
 in the `initial_formulation` folder there are 3 version of legacy formulation for user tests.
+=======
+### Initial Formulation
+in the `initial_formulation` folder there are 3 version of legacy formulation for user tests.
+>>>>>>> fd47384a5c059143f6c103ed63561bff118fbf1c
