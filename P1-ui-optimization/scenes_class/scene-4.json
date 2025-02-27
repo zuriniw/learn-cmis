@@ -1,0 +1,30 @@
+{
+    "env_path": "scenes/backgrounds/scene-4.jpg",
+    "app_path": "scenes/apps/apps-4.json",
+    "questions": [
+        {"q": "How many meditation sessions have been completed?", "app": "meditation", "lod": 0},
+        {"q": "How many job applications were sent?", "app": "job_hunting", "lod": 0},
+        {"q": "How many courses are you enrolled in?", "app": "online_courses", "lod": 0},
+        {"q": "How many artworks have been created?", "app": "art_portfolio", "lod": 0},
+        {"q": "How many bicycle rides have you completed?", "app": "cycling", "lod": 1},
+        
+        {"q": "How many VR sessions were completed?", "app": "virtual_reality", "lod": 0},
+        {"q": "How many hours have been spent in VR?", "app": "virtual_reality", "lod": 1},
+        {"q": "How many VR apps are installed?", "app": "virtual_reality", "lod": 2},
+        
+        {"q": "How many devices are automated?", "app": "home_automation", "lod": 0},
+        {"q": "How many automation rules are active?", "app": "home_automation", "lod": 1}
+    ],
+    "relevance": {
+        "meditation": 0.4,
+        "job_hunting": 0.4,
+        "online_courses": 0.5,
+        "art_portfolio": 0.6,
+        "cycling": 0.7,
+        "virtual_reality": 0.9,
+        "home_automation": 0.8,
+        "sports_stats": 0.5,
+        "driving_log": 0.5,
+        "fashion_catalog": 0.4
+    }
+}

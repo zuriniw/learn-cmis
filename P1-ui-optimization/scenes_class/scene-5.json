@@ -1,0 +1,27 @@
+{
+    "env_path": "scenes/backgrounds/scene-5.jpg",
+    "app_path": "scenes/apps/apps-5.json",
+    "questions": [
+        {"q": "How many hours have been streamed?", "app": "streaming_analytics", "lod": 0},
+        {"q": "How many properties sales have been closed?", "app": "real_estate", "lod": 1},
+        {"q": "What is the current savings balance?", "app": "personal_finance", "lod": 2},
+        {"q": "How many hours have been volunteered?", "app": "volunteering", "lod": 0},
+        {"q": "How many flight have been logged?", "app": "aviation", "lod": 1},
+        
+        {"q": "How many orders were delivered?", "app": "food_delivery", "lod": 0},
+        {"q": "What is the average customer rating?", "app": "food_delivery", "lod": 1},
+        
+        {"q": "How many challenges have been joined?", "app": "fitness_challenges", "lod": 0},
+        {"q": "How many calories were burned in challenges?", "app": "fitness_challenges", "lod": 1},
+        {"q": "What is the total distance covered in challenges?", "app": "fitness_challenges", "lod": 2}
+    ],
+    "relevance": {
+        "streaming_analytics": 0.4,
+        "real_estate": 0.5,
+        "personal_finance": 0.7,
+        "volunteering": 0.4,
+        "aviation": 0.5,
+        "food_delivery": 0.8,
+        "fitness_challenges": 0.9
+    }
+}

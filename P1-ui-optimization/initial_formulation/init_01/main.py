@@ -13,49 +13,31 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 from sklearn.preprocessing import MinMaxScaler 
 
+# sys.path.append("/Users/ziru/Documents/GitHub/CMIS_1/P1-ui-optimization/")
+# from ui import UI
+
 ########################################################
 #############   objective func weights   ###############
 ########################################################
 
-rewards = [3, 5, 3]
+rewards = [5, 3, 2]
 poi_pan = 100
 is_auto_rele = True
 
 '''
  m.setObjective(
-    rewards[0]*relevanceTerm + 
-    rewards[1]*questionProximityTerm +
+    rewards[0]*questionProximityTerm +
+    rewards[1]*relevanceTerm + 
     rewards[2]*lodRewardTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE
 )
 '''
 ########################################################
-#############    some todos and hints    ###############
+#################    load files    #####################
 ########################################################
-##### TODO: DEFINE OBJECTIVES AND CONSTRAINTS #####
-'''
-Input into interface.init_app() should be as follows:
-optimal_results (list of dict): A list where each dictionary contains:
-            - "name" (str): The name of the app (e.g., "weather", "time").
-            - "lod" (int): Level of detail (e.g., 0 or 1).
-            - "placement" (list of int): A list of two integers indicating the placement slot (e.g., [4, 4]; NOTE: This specifies the placement slot rather than the exact placement position)
-
-Potentially relevant information can be obtained by calling scene_UI.get_info(), which returns a dictionary containing:
-- "columns" (int): Number of columns in the UI grid.
-- "rows" (int): Number of rows in the UI grid.
-- "block_size" (int): Size of each block in the grid.
-- "questions_pos" (numpy.ndarray): Position of the question panel in the UI.
-- "questions_size" (numpy.ndarray): Width and height of the question panel.
-- "btn_all_pos" (numpy.ndarray): Position of the "Apps" button.
-- "btn_all_size" (numpy.ndarray): Width and height of the "Apps" button.
-- "roi_pos" (numpy.ndarray): Position of the Region of Interest (ROI) in the UI.
-- "roi_rad" (int): Radius of the Region of Interest (ROI).
-- "relevance" (dict[str, float]): A dictionary mapping application names to their relevance scores.
-'''
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-scene_path = "scenes/scene-3.json"
+scene_path = "scenes/scene-1.json"
 if len(sys.argv) >= 2:
     scene_path = sys.argv[1]
 
@@ -294,11 +276,10 @@ relevanceTerm = sum(rele[app] * x[app, lod, xIdx, yIdx]
                    for xIdx in range(scene_UI.COLS)
                    for yIdx in range(scene_UI.ROWS))
 
-# 3.LoD reward with normalization
+# 3. LoD reward
 lodRewardTerm = sum(
-    ((rele[app] * (lod + 1) / 3 - norm_params['min_lod_reward']) / 
-    (norm_params['max_lod_reward'] - norm_params['min_lod_reward'])) 
-    * x[app, lod, xIdx, yIdx]
+    (((lod + 1) - norm_params['min_lod_reward']) /
+     (norm_params['max_lod_reward'] - norm_params['min_lod_reward'])) * x[app, lod, xIdx, yIdx]
     for app in app_ids
     for lod in range(scene_UI.LODS)
     for xIdx in range(scene_UI.COLS)
@@ -336,14 +317,14 @@ for app in app_ids:
 
 m.ModelSense = GRB.MAXIMIZE
 m.setObjective(
-    rewards[0]*relevanceTerm + 
-    rewards[1]*questionProximityTerm +
+    rewards[0]*questionProximityTerm +
+    rewards[1]*relevanceTerm + 
     rewards[2]*lodRewardTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE
 )
 m.update()
-m.optimize() 
+m.optimize()
 
 optimal_results = []
 for app in app_ids:

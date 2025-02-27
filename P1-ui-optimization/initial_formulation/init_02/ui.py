@@ -17,26 +17,29 @@ from PIL import Image, ImageDraw, ImageFilter
 DELAY_LOD = 150
 DELAY_ALL = 1000
 
+def gamma_correction(color, gamma=2.2, target_saturation=0.7):
+    corrected = np.power(color / 255.0, 1.0 / gamma) * 255
+    gray = np.mean(corrected)
+    final_color = gray + (corrected - gray) * target_saturation
+    return np.clip(final_color, 0, 255).astype(int)
+
 class ListAppUI:
     def __init__(self, parent, app):
         self.parent = parent
         self.app = app
         self.i = 0
         
-        # 创建容器Frame，设置横向填充
         self.container = tk.Frame(
             self.parent, 
-            borderwidth=1.5, 
-            highlightcolor="grey", 
+            borderwidth=0,
+            highlightthickness=1, highlightcolor='darkgrey', highlightbackground='darkgrey',
             width=300,
             relief="solid"
         )
+
         self.container.pack(pady=2, padx=10, fill="x", expand=True)
+        self.container.grid_columnconfigure(0, weight=1) 
         
-        # 配置Grid布局以更好控制扩展
-        self.container.grid_columnconfigure(0, weight=1)  # 允许列扩展
-        
-        # 标题标签使用Grid布局并横向填充
         self.title_label = tk.Label(
             self.container,
             text=f"{self.app.name}:",
@@ -48,9 +51,8 @@ class ListAppUI:
             padx=5,
             pady=10
         )
-        self.title_label.grid(row=0, column=0, sticky="ew")  # 横向填充
+        self.title_label.grid(row=0, column=0, sticky="ew") 
 
-        # 内容标签使用Grid布局并横向填充
         self.content_label = tk.Label(
             self.container,
             text=self.app.info[self.i],
@@ -60,9 +62,8 @@ class ListAppUI:
             padx=5,
             pady=10
         )
-        self.content_label.grid(row=1, column=0, sticky="ew")  # 横向填充
+        self.content_label.grid(row=1, column=0, sticky="ew")
         
-        # 事件绑定保持不变
         self.container.bind("<Button-1>", self.delayed_toggle_info)
         self.title_label.bind("<Button-1>", self.delayed_toggle_info)
         self.content_label.bind("<Button-1>", self.delayed_toggle_info)
@@ -111,12 +112,17 @@ class MainAppUI:
         self.app = app
         self.lod = lod
         self.placement = placement
+        self.panel_dark_color = self.ui.panel_dark_color
+        self.panel_lighter_color = self.ui.panel_lighter_color
+        self.panel_mid_color = self.ui.panel_mid_color
+
+
 
         # Determine initial rowspan and colspan
         rowspan = 1 if lod < 2 else 2
         colspan = 1 if lod < 1 else 2
 
-        self.frame = tk.Frame(self.parent, borderwidth=1.5, highlightcolor='grey', highlightbackground='grey', relief="solid")
+        self.frame = tk.Frame(self.parent, background=self.panel_lighter_color, borderwidth=0, highlightthickness=1, highlightcolor='darkgrey', highlightbackground='darkgrey', relief="solid")
         self.frame.grid(
             column=self.placement[0], 
             row=self.placement[1], 
@@ -132,8 +138,8 @@ class MainAppUI:
             self.frame,
             text=f"{self.app.name}:",
             font=("Arial", 12, "bold",),
-            fg = 'blue',
-            background='lightgrey',
+            fg = self.panel_dark_color,
+            background=self.panel_mid_color,
             anchor="w",
             justify="left",
             padx=7,
@@ -146,26 +152,25 @@ class MainAppUI:
 
         self.content_label = tk.Label(
             self.frame,
-            text=self.format_content(self.app.get_lod(self.lod)),  # 使用单独的格式化函数
+            text=self.format_content(self.app.get_lod(self.lod)), 
             font=("Arial", 9),
             wraplength=wrap,
+            fg = self.panel_dark_color,
+            background=self.panel_lighter_color, 
             anchor="w",
             justify="left",
             padx=4,
         )
         self.content_label.grid(row=1, column=0, sticky="nsew")
 
-        # 配置grid权重，使内容Label可以扩展
         self.frame.grid_rowconfigure(1, weight=1)
         self.frame.grid_columnconfigure(0, weight=1)
 
-        # 绑定点击事件
         self.frame.bind("<Button-1>", self.delayed_update_lod)
         self.title_label.bind("<Button-1>", self.delayed_update_lod)
         self.content_label.bind("<Button-1>", self.delayed_update_lod)
 
 
-    # 在类中添加这个辅助方法
     def format_content(self, content):
         lines = content.split('\n')
         formatted_lines = []
@@ -195,7 +200,7 @@ class MainAppUI:
         
         # Update content with same formatting as init
         self.content_label.config(
-            text=self.format_content(self.app.get_lod(self.lod)),  # 使用单独的格式化函数
+            text=self.format_content(self.app.get_lod(self.lod)), 
             wraplength=wrap
         )
             
@@ -297,12 +302,12 @@ class UI:
     BTN_ALL_POS = [10, 10]
     BTN_ALL_WIDTH, BTN_ALL_HEIGHT = 80, 80
 
-    ALL_WIDTH, ALL_HEIGHT = 180, 500
-    ALL_WIDTH, ALL_HEIGHT = 600, 500
+    ALL_WIDTH, ALL_HEIGHT = 150, 500
+    # ALL_WIDTH, ALL_HEIGHT = 600, 500
     
     POI_RADIUS_MIN, POI_RADIUS_MAX = 50, 200
     POI_PLACEMENT_PADDING = 100
-    ALL_BORDER = 1.5
+    ALL_BORDER = 1
 
     def __init__(self, path="scene-3.json"):
         self.load_scene(path)
@@ -393,16 +398,13 @@ class UI:
             self.frame_all.lift()
         except Exception as e:
             print(f"Error opening apps panel: {e}")
-            # 发生错误时强制重置状态
             self.opening_all = False
             self.btn_all.config(state="normal")
         finally:
-            # 更新状态标志和按钮状态
             self.opening_all = False
             self.btn_all.config(state="normal")
 
     def close_all(self):
-        # 销毁组件并释放资源
         try:
             if self.frame_all.winfo_exists():
                 self.frame_all.place_forget()
@@ -410,7 +412,6 @@ class UI:
         except Exception as e:
             print(f"Error closing apps panel: {e}")
         finally:
-            # 重新初始化应用列表
             self.init_all_panel()
             self.opening_all = False
             self.btn_all.config(state="normal")
@@ -425,14 +426,13 @@ class UI:
                 self.root.after(DELAY_ALL, self.open_all)
         except Exception as e:
             print(f"Error in delayed_open_all: {e}")
-            # 发生错误时强制重置状态
             self.opening_all = False
             self.btn_all.config(state="normal")
 
 
     def init_all_panel(self):
-        self.frame_all = tk.Frame(self.root, width=UI.ALL_WIDTH, height=UI.ALL_HEIGHT, borderwidth = UI.ALL_BORDER, relief="solid", )
-        self.frame_all.pack_propagate(False)
+        self.frame_all = tk.Frame(self.root, width=UI.ALL_WIDTH, height=UI.ALL_HEIGHT, borderwidth = 0, highlightthickness=1, highlightbackground='darkgrey', relief="solid", )
+        # self.frame_all.pack_propagate(False)
         
         # Close button
         self.btn_close_all = tk.Button(self.frame_all, text="Close", command=self.close_all)
@@ -462,14 +462,28 @@ class UI:
         self.btn_all = tk.Button(self.root, text="Apps", command=self.delayed_open_all)
         self.btn_all.place(x=self.BTN_ALL_POS[0], y=self.BTN_ALL_POS[1], width=self.BTN_ALL_WIDTH, height=self.BTN_ALL_HEIGHT, anchor="nw") 
 
+
+    
     def init_background(self):
         img = Image.open(self.env_path)
         img = img.resize((UI.WINDOW_WIDTH, UI.WINDOW_HEIGHT), Image.LANCZOS)
+        
+        img_array = np.array(img)
+        average_color = np.mean(img_array, axis=(0,1))
+        normalized_color = gamma_correction(average_color, gamma=2.2)
+        
+        brightened_color = np.minimum(normalized_color * 1.2, 255).astype(int)
+        darkened_color = np.maximum(normalized_color * 0.45, 2).astype(int)
+        lighter_color = np.minimum(normalized_color * 1.4, 255).astype(int)
+        mid_color = np.minimum(normalized_color * 1, 255).astype(int)
+        
+        self.panel_bg_color = '#{:02x}{:02x}{:02x}'.format(*brightened_color)
+        self.panel_dark_color = '#{:02x}{:02x}{:02x}'.format(*darkened_color)
+        self.panel_lighter_color = '#{:02x}{:02x}{:02x}'.format(*lighter_color)
+        self.panel_mid_color = '#{:02x}{:02x}{:02x}'.format(*mid_color)
+
+
         self.env_img = ImageTk.PhotoImage(img)
-        '''
-        env_label = tk.Label(self.root, image=self.env_img)
-        env_label.place(x=0, y=0, relwidth=1, relheight=1)
-        '''
         self.env_canvas = tk.Canvas(self.root, width=UI.WINDOW_WIDTH, height=UI.WINDOW_HEIGHT)
         self.env_canvas.place(x=0, y=0)
         self.env_canvas.create_image(0, 0, anchor="nw", image=self.env_img)
@@ -490,22 +504,30 @@ class UI:
 
 
     def init_question(self):
-        self.frame_question = tk.Frame(self.root, width=UI.QUESTIONS_WIDTH, height=UI.QUESTIONS_HEIGHT, padx=2)
+        self.frame_question = tk.Frame(self.root, width=UI.QUESTIONS_WIDTH, height=UI.QUESTIONS_HEIGHT, bg=self.panel_bg_color)
         self.frame_question.pack_propagate(False)
         self.label_question = tk.Label(self.frame_question, 
                 text=self.questions[self.qi]["q"], 
                 wraplength=180,
-                fg = 'darkblue',
+                fg = self.panel_dark_color,
+                bg=self.panel_bg_color,
                 padx=10, 
                 pady=10)
-        self.entry_answer = tk.Entry(self.frame_question, width=20)
-        self.btn_submit = tk.Button(self.frame_question, text="Submit", command=self.update_question)
+        self.entry_answer = tk.Entry(self.frame_question, width=18,)
+        self.btn_submit = tk.Button(self.frame_question, text="Submit", bg=self.panel_bg_color, command=self.update_question)
         
         self.label_question.pack(fill="x")
         self.entry_answer.pack()
         self.btn_submit.pack()
         self.frame_question.place(x=self.q_pos[0], y=self.q_pos[1], anchor="nw")
-        self.color = 'darkblue'
+        self.color = self.panel_dark_color
+        self.label_question.config(bg=self.panel_bg_color)
+        # self.entry_answer.config(bg=self.panel_bg_color)
+        self.btn_submit.config(bg=self.panel_bg_color, pady=0, padx=0)
+
+
+
+
 
 
     def load_scene(self, path="scene.json", shuffle_questions=True):

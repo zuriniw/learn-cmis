@@ -1,0 +1,232 @@
+[
+    {
+        "app": "meditation",
+        "info": [
+            {
+                "label": "Sessions Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Total Time Meditated (min):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Streak Days:",
+                "type": "int",
+                "min": 0,
+                "max": 365
+            }
+        ]
+    },
+    {
+        "app": "job_hunting",
+        "info": [
+            {
+                "label": "Applications Sent:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Interviews Scheduled:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Offers Received:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            }
+        ]
+    },
+    {
+        "app": "online_courses",
+        "info": [
+            {
+                "label": "Courses Enrolled:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Hours Studied:",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            },
+            {
+                "label": "Certificates Earned:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            }
+        ]
+    },
+    {
+        "app": "art_portfolio",
+        "info": [
+            {
+                "label": "Artworks Created:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Exhibitions Attended:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Hours Spent Creating:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            }
+        ]
+    },
+    {
+        "app": "cycling",
+        "info": [
+            {
+                "label": "Distance Covered (km):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            },
+            {
+                "label": "Rides Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Calories Burned:",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            }
+        ]
+    },
+    {
+        "app": "virtual_reality",
+        "info": [
+            {
+                "label": "VR Sessions:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Hours in VR:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Apps Installed:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            }
+        ]
+    },
+    {
+        "app": "home_automation",
+        "info": [
+            {
+                "label": "Devices Automated:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Automation Rules:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Energy Saved (kWh):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            }
+        ]
+    },
+    {
+        "app": "sports_stats",
+        "info": [
+            {
+                "label": "Matches Played:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Goals Scored:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Assists Made:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "driving_log",
+        "info": [
+            {
+                "label": "Trips Taken:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Distance Driven (km):",
+                "type": "int",
+                "min": 0,
+                "max": 500000
+            },
+            {
+                "label": "Fuel Used (L):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            }
+        ]
+    },
+    {
+        "app": "fashion_catalog",
+        "info": [
+            {
+                "label": "Items Cataloged:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Outfits Created:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Shopping Budget (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            }
+        ]
+    }
+]

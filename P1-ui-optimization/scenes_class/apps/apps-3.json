@@ -1,0 +1,232 @@
+[
+    {
+        "app": "podcasts",
+        "info": [
+            {
+                "label": "Episodes Played:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Listening Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            },
+            {
+                "label": "Downloads:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "smart_home",
+        "info": [
+            {
+                "label": "Devices Connected:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Energy Usage (kWh):",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Automation Scripts:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "app": "ecommerce",
+        "info": [
+            {
+                "label": "Orders Placed:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Cart Value (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 20000
+            },
+            {
+                "label": "Wishlist Items:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "fitness_tracker",
+        "info": [
+            {
+                "label": "Calories Tracked:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Workouts Logged:",
+                "type": "int",
+                "min": 0,
+                "max": 365
+            },
+            {
+                "label": "Active Minutes:",
+                "type": "int",
+                "min": 0,
+                "max": 1440
+            }
+        ]
+    },
+    {
+        "app": "stock_market",
+        "info": [
+            {
+                "label": "Stocks Watched:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Portfolio Value (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 1000000
+            },
+            {
+                "label": "Trades Executed:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            }
+        ]
+    },
+    {
+        "app": "cooking",
+        "info": [
+            {
+                "label": "Recipes Tried:",
+                "type": "int",
+                "min": 0,
+                "max": 300
+            },
+            {
+                "label": "Cooking Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 240
+            },
+            {
+                "label": "Ingredients Used:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            }
+        ]
+    },
+    {
+        "app": "language_learning",
+        "info": [
+            {
+                "label": "Words Learned:",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            },
+            {
+                "label": "Practice Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 720
+            },
+            {
+                "label": "Streak Days:",
+                "type": "int",
+                "min": 0,
+                "max": 365
+            }
+        ]
+    },
+    {
+        "app": "car_maintenance",
+        "info": [
+            {
+                "label": "Oil Changes:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Mileage (km):",
+                "type": "int",
+                "min": 0,
+                "max": 500000
+            },
+            {
+                "label": "Service Appointments:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            }
+        ]
+    },
+    {
+        "app": "task_management",
+        "info": [
+            {
+                "label": "Tasks Created:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Completed Tasks:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Overdue Tasks:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "virtual_meetings",
+        "info": [
+            {
+                "label": "Meetings Attended:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Total Meeting Time (min):",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Participants Connected:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    }
+]

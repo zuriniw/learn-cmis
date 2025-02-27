@@ -1,0 +1,30 @@
+{
+    "env_path": "scenes/backgrounds/scene-1.jpg",
+    "app_path": "scenes/apps/apps-1.json",
+    "questions": [
+        {"q": "How many posts were made today?", "app": "socialmedia", "lod": 0},
+        {"q": "How many followers have been gained?", "app": "socialmedia", "lod": 1},
+        {"q": "How many deliveries were made today?", "app": "delivery", "lod": 0},
+        {"q": "What is the next delivery time?", "app": "delivery", "lod": 2},
+        {"q": "How many videos were watched today?", "app": "streaming", "lod": 0},
+        {"q": "What is the total watch time today?", "app": "streaming", "lod": 1},
+        {"q": "How many orders were placed on ecommerce today?", "app": "ecommerce", "lod": 0},
+        {"q": "What is the current cart value?", "app": "ecommerce", "lod": 1},
+        {"q": "How many games have been played?", "app": "gamingarcade", "lod": 1},
+        {"q": "What is the session time for gaming?", "app": "gamingarcade", "lod": 2}
+    ],
+    "relevance": {
+        "socialmedia": 0.8,
+        "delivery": 0.7,
+        "streaming": 0.6,
+        "ecommerce": 0.5,
+        "gamingarcade": 0.4,
+        "meditation": 0.3,
+        "news": 0.2,
+        "photography": 0.2,
+        "podcasts": 0.2,
+        "fooddelivery": 0.1,
+        "fitnessclub": 0.1,
+        "rideshare": 0.1
+    }
+}

@@ -1,0 +1,232 @@
+[
+    {
+        "app": "streaming_analytics",
+        "info": [
+            {
+                "label": "Hours Streamed:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Viewers Reached:",
+                "type": "int",
+                "min": 0,
+                "max": 1000000
+            },
+            {
+                "label": "Clips Created:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "real_estate",
+        "info": [
+            {
+                "label": "Properties Listed:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Sales Closed:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Commission Earned (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 1000000
+            }
+        ]
+    },
+    {
+        "app": "personal_finance",
+        "info": [
+            {
+                "label": "Expenses Tracked:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Income Sources:",
+                "type": "int",
+                "min": 0,
+                "max": 50
+            },
+            {
+                "label": "Savings Balance (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 100000
+            }
+        ]
+    },
+    {
+        "app": "volunteering",
+        "info": [
+            {
+                "label": "Hours Volunteered:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Projects Joined:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Donations Raised (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 500000
+            }
+        ]
+    },
+    {
+        "app": "aviation",
+        "info": [
+            {
+                "label": "Flight Hours:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Flights Logged:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Miles Flown:",
+                "type": "int",
+                "min": 0,
+                "max": 1000000
+            }
+        ]
+    },
+    {
+        "app": "food_delivery",
+        "info": [
+            {
+                "label": "Orders Delivered:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Customer Ratings:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Distance Covered (km):",
+                "type": "int",
+                "min": 0,
+                "max": 50000
+            }
+        ]
+    },
+    {
+        "app": "fitness_challenges",
+        "info": [
+            {
+                "label": "Challenges Joined:",
+                "type": "int",
+                "min": 0,
+                "max": 100
+            },
+            {
+                "label": "Calories Burned:",
+                "type": "int",
+                "min": 0,
+                "max": 100000
+            },
+            {
+                "label": "Total Distance (km):",
+                "type": "int",
+                "min": 0,
+                "max": 5000
+            }
+        ]
+    },
+    {
+        "app": "cryptocurrency",
+        "info": [
+            {
+                "label": "Coins Owned:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Transactions Made:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Portfolio Value (USD):",
+                "type": "int",
+                "min": 0,
+                "max": 1000000
+            }
+        ]
+    },
+    {
+        "app": "book_club",
+        "info": [
+            {
+                "label": "Books Read:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            },
+            {
+                "label": "Meetings Attended:",
+                "type": "int",
+                "min": 0,
+                "max": 200
+            },
+            {
+                "label": "Reviews Written:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            }
+        ]
+    },
+    {
+        "app": "crafting",
+        "info": [
+            {
+                "label": "Projects Completed:",
+                "type": "int",
+                "min": 0,
+                "max": 500
+            },
+            {
+                "label": "Hours Spent Crafting:",
+                "type": "int",
+                "min": 0,
+                "max": 10000
+            },
+            {
+                "label": "Materials Used:",
+                "type": "int",
+                "min": 0,
+                "max": 1000
+            }
+        ]
+    }
+]

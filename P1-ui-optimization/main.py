@@ -17,45 +17,24 @@ from sklearn.preprocessing import MinMaxScaler
 #############   objective func weights   ###############
 ########################################################
 
-rewards = [3, 5, 3]
+rewards = [5, 3, 3]
 poi_pan = 100
 is_auto_rele = True
 
 '''
  m.setObjective(
-    rewards[0]*relevanceTerm + 
-    rewards[1]*questionProximityTerm +
+    rewards[0]*questionProximityTerm +
+    rewards[1]*relevanceTerm + 
     rewards[2]*lodRewardTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE
 )
 '''
 ########################################################
-#############    some todos and hints    ###############
+#############    load some settings    #################
 ########################################################
-##### TODO: DEFINE OBJECTIVES AND CONSTRAINTS #####
-'''
-Input into interface.init_app() should be as follows:
-optimal_results (list of dict): A list where each dictionary contains:
-            - "name" (str): The name of the app (e.g., "weather", "time").
-            - "lod" (int): Level of detail (e.g., 0 or 1).
-            - "placement" (list of int): A list of two integers indicating the placement slot (e.g., [4, 4]; NOTE: This specifies the placement slot rather than the exact placement position)
-
-Potentially relevant information can be obtained by calling scene_UI.get_info(), which returns a dictionary containing:
-- "columns" (int): Number of columns in the UI grid.
-- "rows" (int): Number of rows in the UI grid.
-- "block_size" (int): Size of each block in the grid.
-- "questions_pos" (numpy.ndarray): Position of the question panel in the UI.
-- "questions_size" (numpy.ndarray): Width and height of the question panel.
-- "btn_all_pos" (numpy.ndarray): Position of the "Apps" button.
-- "btn_all_size" (numpy.ndarray): Width and height of the "Apps" button.
-- "roi_pos" (numpy.ndarray): Position of the Region of Interest (ROI) in the UI.
-- "roi_rad" (int): Radius of the Region of Interest (ROI).
-- "relevance" (dict[str, float]): A dictionary mapping application names to their relevance scores.
-'''
-
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-scene_path = "scenes/scene-1.json"
+scene_path = "scenes/scene-3.json"
 if len(sys.argv) >= 2:
     scene_path = sys.argv[1]
 
@@ -285,7 +264,6 @@ for app in app_ids:
                 dist_to_questions = np.sqrt(np.sum((pos - q_center)**2))
                 normalized_dist = ((dist_to_questions - norm_params['q_min_dist']) / 
                                 (norm_params['q_max_dist'] - norm_params['q_min_dist']))
-                # questionProximityTerm += (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
                 questionProximityTerm += rele[app] * (1 - normalized_dist) * x[app, lod, xIdx, yIdx]
 
 # 2. Relevance term
@@ -337,8 +315,8 @@ for app in app_ids:
 
 m.ModelSense = GRB.MAXIMIZE
 m.setObjective(
-    rewards[0]*relevanceTerm + 
-    rewards[1]*questionProximityTerm +
+    rewards[0]*questionProximityTerm +
+    rewards[1]*relevanceTerm + 
     rewards[2]*lodRewardTerm +
     roiAvoidanceTerm,
     GRB.MAXIMIZE

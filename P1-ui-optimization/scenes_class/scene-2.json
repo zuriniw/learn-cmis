@@ -1,0 +1,34 @@
+{
+    "env_path": "scenes/backgrounds/scene-2.jpg",
+    "app_path": "scenes/apps/apps-2.json",
+    "questions": [
+        {"q": "How many calories were burned today?", "app": "fitness", "lod": 0},
+        {"q": "What was the total workout duration?", "app": "fitness", "lod": 1},
+        {"q": "How many steps were taken today?", "app": "fitness", "lod": 2},
+        
+        {"q": "What is the current heart rate?", "app": "healthcare", "lod": 0},
+        {"q": "What is the blood pressure reading (sys)?", "app": "healthcare", "lod": 1},
+        
+        {"q": "How many new messages are there?", "app": "social", "lod": 0},
+        {"q": "How many friends are online now?", "app": "social", "lod": 1},
+        
+        {"q": "What is the current account balance?", "app": "finance", "lod": 0},
+        {"q": "How many articles were read today?", "app": "news", "lod": 0},
+        {"q": "What is the current speed while navigating?", "app": "navigation", "lod": 0},
+        {"q": "How many photos have been taken today?", "app": "photography", "lod": 0}
+    ],
+    "relevance": {
+        "fitness": 0.9,
+        "healthcare": 0.8,
+        "finance": 0.6,
+        "social": 0.7,
+        "news": 0.6,
+        "navigation": 0.5,
+        "photography": 0.5,
+        "music": 0.4,
+        "security": 0.4,
+        "delivery": 0.3,
+        "streaming": 0.3,
+        "gaming": 0.3
+    }
+}

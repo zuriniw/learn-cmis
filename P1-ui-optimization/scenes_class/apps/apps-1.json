@@ -1,0 +1,99 @@
+[
+    {
+      "app": "socialmedia",
+      "info": [
+        { "label": "Posts Today:", "type": "int", "min": 0, "max": 100 },
+        { "label": "Followers Gained:", "type": "int", "min": 0, "max": 1000 },
+        { "label": "Active Time (min):", "type": "int", "min": 0, "max": 720 }
+      ]
+    },
+    {
+      "app": "delivery",
+      "info": [
+        { "label": "Deliveries Made:", "type": "int", "min": 0, "max": 200 },
+        { "label": "Miles Driven:", "type": "int", "min": 0, "max": 500 },
+        { "label": "Next Delivery Time (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "streaming",
+      "info": [
+        { "label": "Videos Watched:", "type": "int", "min": 0, "max": 50 },
+        { "label": "Total Watch Time (min):", "type": "int", "min": 0, "max": 1440 },
+        { "label": "Next Show Time (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "ecommerce",
+      "info": [
+        { "label": "Orders Placed:", "type": "int", "min": 0, "max": 100 },
+        { "label": "Cart Value (USD):", "type": "int", "min": 0, "max": 10000 },
+        { "label": "Delivery Time (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "gamingarcade",
+      "info": [
+        { "label": "Tokens Used:", "type": "int", "min": 0, "max": 500 },
+        { "label": "Games Played:", "type": "int", "min": 0, "max": 100 },
+        { "label": "Session Time (min):", "type": "int", "min": 0, "max": 600 }
+      ]
+    },
+    {
+      "app": "meditation",
+      "info": [
+        { "label": "Sessions Completed:", "type": "int", "min": 0, "max": 50 },
+        { "label": "Total Time (min):", "type": "int", "min": 0, "max": 1440 },
+        { "label": "Next Session (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "news",
+      "info": [
+        { "label": "Articles Read:", "type": "int", "min": 0, "max": 200 },
+        { "label": "Reading Time (min):", "type": "int", "min": 0, "max": 600 },
+        { "label": "Next Update (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "photography",
+      "info": [
+        { "label": "Photos Taken:", "type": "int", "min": 0, "max": 1000 },
+        { "label": "Edits Made:", "type": "int", "min": 0, "max": 500 },
+        { "label": "Next Shoot Time (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "podcasts",
+      "info": [
+        { "label": "Episodes Played:", "type": "int", "min": 0, "max": 100 },
+        { "label": "Listening Time (min):", "type": "int", "min": 0, "max": 1440 },
+        { "label": "Next Episode (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "fooddelivery",
+      "info": [
+        { "label": "Orders Completed:", "type": "int", "min": 0, "max": 200 },
+        { "label": "Total Earnings (USD):", "type": "int", "min": 0, "max": 10000 },
+        { "label": "Next Pickup (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "fitnessclub",
+      "info": [
+        { "label": "Classes Attended:", "type": "int", "min": 0, "max": 100 },
+        { "label": "Workout Time (min):", "type": "int", "min": 0, "max": 1440 },
+        { "label": "Next Class (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    },
+    {
+      "app": "rideshare",
+      "info": [
+        { "label": "Rides Given:", "type": "int", "min": 0, "max": 500 },
+        { "label": "Miles Driven:", "type": "int", "min": 0, "max": 2000 },
+        { "label": "Next Ride Time (hhmm):", "type": "time", "min": 0, "max": 2359 }
+      ]
+    }
+]
+  

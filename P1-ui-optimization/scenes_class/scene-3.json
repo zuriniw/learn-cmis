@@ -1,0 +1,30 @@
+{
+    "env_path": "scenes/backgrounds/scene-3.jpg",
+    "app_path": "scenes/apps/apps-3.json",
+    "questions": [
+        {"q": "How many episodes have been played?", "app": "podcasts", "lod": 0},
+        {"q": "What is the total listening time?", "app": "podcasts", "lod": 1},
+        {"q": "How many downloads have been made?", "app": "podcasts", "lod": 2},
+        
+        {"q": "How many workouts were logged?", "app": "fitness_tracker", "lod": 1},
+        {"q": "How many calories have been tracked?", "app": "fitness_tracker", "lod": 0},
+        {"q": "What are the active minutes logged?", "app": "fitness_tracker", "lod": 2},
+        
+        {"q": "What is the current portfolio value?", "app": "stock_market", "lod": 1},
+        {"q": "How many service appointments are scheduled?", "app": "car_maintenance", "lod": 2},
+        {"q": "How many tasks have been created?", "app": "task_management", "lod": 0},
+        {"q": "What is the total meeting time?", "app": "virtual_meetings", "lod": 1}
+    ],
+    "relevance": {
+        "podcasts": 0.9,
+        "fitness_tracker": 0.9,
+        "stock_market": 0.5,
+        "car_maintenance": 0.7,
+        "task_management": 0.5,
+        "virtual_meetings": 0.6,
+        "ecommerce": 0.4,
+        "smart_home": 0.4,
+        "cooking": 0.3,
+        "language_learning": 0.3
+    }
+}
