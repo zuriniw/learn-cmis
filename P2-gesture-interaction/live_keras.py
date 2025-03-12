@@ -29,8 +29,8 @@ for _ in range(buffer.maxlen):
     buffer.append(np.zeros(6))
 
 # change to your model path
-model_path = 'example_models/b_l_o_r_u.keras'
-label_encoder_path = 'example_models/label_encoder_b_l_o_r_u.pkl'
+model_path = '/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/example_models/b_l_o_r_u.keras'
+label_encoder_path = '/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/example_models/label_encoder_b_l_o_r_u.pkl'
 
 ## there are more commands that you can use
 ### (L, R, A, D, W, S, +, -) ###
