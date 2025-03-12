@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="89fb48b4-5fd4-470a-b153-da5d156def5f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/ui.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2sxM91QuQ8naGCICu9Xfwlfqkqw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager">
+    <configuration name="main_end" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="CMIS_1" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/cmis_25s/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/P1-ui-optimization/_inclass-examples/recipe-placement" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/P1-ui-optimization/_inclass-examples/recipe-placement/main_end.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="89fb48b4-5fd4-470a-b153-da5d156def5f" name="Changes" comment="" />
+      <created>1739392617402</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1739392617402</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>
