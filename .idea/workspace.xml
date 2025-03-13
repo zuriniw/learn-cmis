@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89fb48b4-5fd4-470a-b153-da5d156def5f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_01/ui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_02/ui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/initial_formulation/init_03/ui.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P1-ui-optimization/ui.py" beforeDir="false" afterPath="$PROJECT_DIR$/P1-ui-optimization/ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P2-gesture-interaction/train_keras.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/P2-gesture-interaction/train_keras.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
