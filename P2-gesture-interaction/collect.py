@@ -6,167 +6,148 @@ import time
 import threading
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import os  # for creating the data directory
-import matplotlib as mpl  # if you need to adjust rcParams
+import os
+import matplotlib as mpl
 
-# You might need to change this (you can find it by looking at the port in the Arduino IDE)
-# ARDUINO_PORT = '/dev/cu.usbmodem1401' # Mac-style port
-ARDUINO_PORT = 'COM7' # Windows-style port
-ARDUINO_PORT = '/dev/cu.usbmodem113401' # Mac-style port
+# 双板卡配置
+ARDUINO_PORT_LEFT = '/dev/cu.usbmodem13401'  # 左板
+ARDUINO_PORT_RIGHT = '/dev/cu.usbmodem13201'  # 右板
 
-# Open the serial port
-ser = serial.Serial(ARDUINO_PORT, 9600)
+# 初始化串口
+ser_left = serial.Serial(ARDUINO_PORT_LEFT, 9600)
+ser_right = serial.Serial(ARDUINO_PORT_RIGHT, 9600)
 
-# Global variables for recording
+# 数据存储配置
 recording = {"active": False, "letter": None, "file": None}
 recording_lock = threading.Lock()
 
-# Create a data folder for the current run using a timestamp.
-# Replace the "." in the timestamp with a "-" for the folder name.
+# 创建数据存储目录
 run_timestamp = str(time.time()).replace(".", "-")
 data_folder_path = os.path.join("./data", run_timestamp)
 os.makedirs(data_folder_path, exist_ok=True)
 
-# Create a fixed-length buffer for 100 arrays of size 6
-buffer = deque(maxlen=100)
-# Initialize the buffer with zeros
+# 初始化双板卡数据缓冲区（12维特征）
+buffer = deque(maxlen=100)  # 存储12维特征向量
 for _ in range(buffer.maxlen):
-    buffer.append(np.zeros(6))
+    buffer.append(np.zeros(12))  # 左6维 + 右6维
 
 def read_serial():
-    """
-    Function to continuously read data from the serial port.
-    It decodes the incoming line, splits the values, normalizes them,
-    and appends to the global buffer.
-    Also records data to file if recording is active.
-    
-    NOTE: The timestamp is obtained via time.time()
-    """
+    """双板卡数据采集线程"""
     while True:
         try:
-            line = ser.readline().decode('utf-8').strip()
-            if line:  # Only process non-empty lines
-                # Convert the comma-separated string into a numpy array of floats
-                values = np.array(line.split(',')).astype(np.float32)
-                if len(values) != 6:
-                    continue  # skip lines that don't have exactly 6 values
-                # Normalize the values as in your original code
-                values[:3] = values[:3] / 8
-                values[3:] = values[3:] / 4000
-                # Update the fixed-length buffer with new data
-                buffer.append(values)
-
-                # Record data if recording is active.
-                # Timestamp is now simply time.time() (a float)
-                timestamp = time.time()
-                with recording_lock:
-                    if recording["active"] and recording["file"] is not None:
-                        csv_line = ",".join(map(str, values))
-                        recording["file"].write(csv_line + f",{timestamp}\n")
-                        recording["file"].flush()
+            # 读取双板数据
+            line_left = ser_left.readline().decode('utf-8').strip()
+            line_right = ser_right.readline().decode('utf-8').strip()
+            
+            # 处理左板数据
+            if line_left:
+                values_left = np.array(line_left.split(',')).astype(np.float32)
+                if len(values_left) != 6:
+                    continue
+                processed_left = values_left[:3]/8, values_left[3:]/4000  # 分离加速度和陀螺仪
+                
+            # 处理右板数据
+            if line_right:
+                values_right = np.array(line_right.split(',')).astype(np.float32)
+                if len(values_right) != 6:
+                    continue
+                processed_right = values_right[:3]/8, values_right[3:]/4000
+                
+            # 合并双板数据（加速度+陀螺仪）
+            combined = np.concatenate([
+                processed_left[0],  # 左加速度
+                processed_left[1],  # 左陀螺仪
+                processed_right[0], # 右加速度
+                processed_right[1]  # 右陀螺仪
+            ])
+            
+            buffer.append(combined)
+            
+            # 数据记录
+            timestamp = time.time()
+            with recording_lock:
+                if recording["active"] and recording["file"] is not None:
+                    csv_line = ",".join(map(str, combined))
+                    recording["file"].write(f"{csv_line},{timestamp}\n")
+                    recording["file"].flush()
+                    
         except Exception as e:
-            print("Error reading serial data:", e)
+            print(f"Serial Error: {str(e)}")
+            time.sleep(0.1)
 
-# Start the serial reading in a background thread so the animation can run in the main thread.
-serial_thread = threading.Thread(target=read_serial, daemon=True)
-serial_thread.start()
+# 可视化配置
+fig, ax = plt.subplots(figsize=(12, 6))
+x = np.arange(buffer.maxlen)
 
-# Set up the figure for live plotting
-fig, ax = plt.subplots()
-x = np.arange(buffer.maxlen)  # x-axis represents the index in the buffer
+# 12通道颜色和标签配置
+colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5',
+          '#FF9999', '#88D8B0', '#FFCC99', '#99CCFF', '#C2B3CD', '#FF6666']
+labels = [
+    'L-AccX', 'L-AccY', 'L-AccZ', 
+    'L-GyrX', 'L-GyrY', 'L-GyrZ',
+    'R-AccX', 'R-AccY', 'R-AccZ',
+    'R-GyrX', 'R-GyrY', 'R-GyrZ'
+]
 
-# Define different colors for each of the six channels
-colors = ['red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
-labels = ["acc_x", "acc_y", "acc_z", "gyro_x", "gyro_y", "gyro_z"]
-
-# Create a list to hold the line objects for each channel
+# 初始化绘图对象
 lines = []
-for i in range(6):
-    line, = ax.plot(x, np.zeros(buffer.maxlen), color=colors[i], label=labels[i])
+for i in range(12):
+    line, = ax.plot(x, np.zeros(buffer.maxlen), 
+                   color=colors[i], 
+                   linewidth=0.8,
+                   label=labels[i])
     lines.append(line)
 
-ax.legend(loc='upper right')
-ax.set_title("Real-time Data Visualization", color='black')
-ax.set_xlabel("Buffer Index")
-ax.set_ylabel("Normalized Sensor Values")
+ax.legend(ncol=3, loc='upper right', fontsize=6)
+ax.set_title("Dual Board Sensor Data", color='#333333', fontsize=10)
+ax.set_facecolor('#F5F5F5')
 
 def animate(frame):
-    """
-    This animation function is called periodically.
-    It converts the current buffer to a numpy array and updates each line.
-    Then, it recalculates the axis limits to adjust for new data.
-    """
-    # Convert the current buffer to a numpy array of shape (100, 6)
+    """实时数据更新"""
     data_array = np.array(buffer)
-    # Update each line with new y-data from the corresponding channel
-    for i, line in enumerate(lines):
-        line.set_ydata(data_array[:, i])
-    
-    # Recalculate limits and update the view
-    ax.relim()              # Recalculate limits based on current data
-    ax.autoscale_view()     # Autoscale the view to the new limits
+    for i in range(12):
+        lines[i].set_ydata(data_array[:, i])
+    ax.relim()
+    ax.autoscale_view()
     return lines
 
 def on_key_press(event):
-    """
-    Handle key press events.
-    
-    When a letter key is pressed:
-      - If the key is 'q': quit the application immediately without creating a file.
-      - If not recording: start recording to a file. The file is created within the
-        data folder (created once per run) and a CSV header is written.
-      - If already recording with the same key: stop recording, close the file, and revert the title.
-      - If already recording with a different key: the key press is ignored.
-    """
+    """增强版按键处理"""
     global recording
     key = event.key.lower()
-
-    # If the key is 'q', quit the application.
+    
     if key == 'q':
-        print("Quit key pressed. Exiting application.")
         plt.close()
         return
-
-    # Only process single alphabetical characters
+        
     if len(key) != 1 or not key.isalpha():
         return
     
     with recording_lock:
         if not recording["active"]:
-            # Start recording for this gesture
+            # 开始记录
             recording["active"] = True
             recording["letter"] = key
-            # Create the CSV file inside the data folder for this run.
             filename = os.path.join(data_folder_path, f"{key}.csv")
             recording["file"] = open(filename, "w")
-            # Write CSV header
-            recording["file"].write("acc_x,acc_y,acc_z,gyro_x,gyro_y,gyro_z,timestamp\n")
-            ax.set_title(f"RECORDING Gesture {key}", color='red')
-            fig.canvas.draw_idle()  # Force the canvas to update the title.
-            print(f"Started recording for gesture '{key}' in file: {filename}")
+            # 12维数据头
+            header = ",".join(labels) + ",timestamp\n"
+            recording["file"].write(header)
+            ax.set_title(f"Recording [{key.upper()}]", color='#FF4444', fontweight='bold')
         else:
+            # 停止记录
             if recording["letter"] == key:
-                # Stop recording
                 recording["active"] = False
-                if recording["file"] is not None:
+                if recording["file"]:
                     recording["file"].close()
                     recording["file"] = None
-                ax.set_title("Real-time Data Visualization", color='black')
-                fig.canvas.draw_idle()  # Force the canvas to update the title.
-                print(f"Stopped recording for gesture '{key}'")
-            else:
-                print(f"Ignored key press '{key}' because recording gesture '{recording['letter']}' is active.")
+                ax.set_title("Dual Board Sensor Data", color='#333333')
+                
+    fig.canvas.draw_idle()
 
-# Connect our key press event handler.
+# 启动系统
+serial_thread = threading.Thread(target=read_serial, daemon=True)
+serial_thread.start()
 fig.canvas.mpl_connect('key_press_event', on_key_press)
-
-# Disconnect Matplotlib's default key press handler to prevent built-in key bindings (like "l")
-# from interfering with our custom behavior.
-if hasattr(fig.canvas.manager, 'key_press_handler_id'):
-    fig.canvas.mpl_disconnect(fig.canvas.manager.key_press_handler_id)
-
-# Create an animation that updates every 10ms.
-ani = animation.FuncAnimation(fig, animate, interval=10, blit=True)
-
-# Start the Matplotlib event loop.
+ani = animation.FuncAnimation(fig, animate, interval=20, blit=True)
 plt.show()
