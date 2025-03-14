@@ -27,8 +27,6 @@ float logoX = 500;
 float logoY = 500;
 float logoZ = 50f;
 float logoRotation = 0;
-color logoColor = color(255); 
-
 
 private class Destination
 {
@@ -70,6 +68,7 @@ void setup() {
   new UDPReceiver(5005).start();
 }
 
+
 // this loop function is running continously after setup() is executed
 void draw() {
 
@@ -110,22 +109,12 @@ void draw() {
 
   //===========DRAW LOGO SQUARE=================
   pushMatrix();
-  translate(logoX, logoY);
-  rotate(radians(logoRotation));
+  translate(logoX, logoY); //translate draw center to the center oft he logo square
+  rotate(radians(logoRotation)); //rotate using the logo square as the origin
   noStroke();
-  fill(logoColor);
-  rect(0, 0, logoZ, logoZ);  // 绘制方块
-  
-  // 绘制方向箭头（优化版）
-  fill(0);
-  float arrowSize = logoZ * 0.3;
-  triangle(-arrowSize/2, -logoZ/2 - arrowSize, 
-           0, -logoZ/2, 
-           arrowSize/2, -logoZ/2 - arrowSize);
+  fill(60, 60, 192, 192);
+  rect(0, 0, logoZ, logoZ);
   popMatrix();
-  
-  // 新增：绘制方向轴线
-  drawDirectionAxis(); // 调用虚线绘制方法
 
   //===========DRAW EXAMPLE CONTROLS=================
   fill(255);
@@ -149,6 +138,7 @@ void scaffoldControlLogic()
   //lower left corner, decrease Z
   text("-", inchToPix(.4f), height-inchToPix(.4f));
   if (mousePressed && dist(0, height, mouseX, mouseY)<inchToPix(.8f))
+    logoZ = constrain(logoZ-inchToPix(.02f), .01, inchToPix(4f)); //leave min and max alone!
 
   //lower right corner, increase Z
   text("+", width-inchToPix(.4f), height-inchToPix(.4f));
@@ -171,48 +161,6 @@ void scaffoldControlLogic()
   text("down", width/2, height-inchToPix(.4f));
   if (mousePressed && dist(width/2, height, mouseX, mouseY)<inchToPix(.8f))
     logoY+=inchToPix(.02f);
-}
-
-// ====== 新增虚线绘制方法 ======
-void drawDirectionAxis() {
-  pushMatrix();
-  translate(logoX, logoY); // 定位到方块中心
-  
-  // 设置虚线样式
-  stroke(128);      // 灰色
-  strokeWeight(1.5);
-  strokeCap(ROUND); // 圆头虚线
-  noFill();
-  
-  // 计算方向向量（长度取屏幕对角线确保覆盖）
-  float lineLength = dist(0, 0, width, height);
-  float dirX = cos(radians(logoRotation));
-  float dirY = sin(radians(logoRotation));
-  
-  // 动态虚线参数
-  float dashLen = 20; // 每段虚线长度
-  float gapLen = 15;  // 间隔长度
-  
-  // 双方向绘制（正反延长线）
-  for(int sign = -1; sign <= 1; sign += 2) {
-    float currentPos = 0;
-    boolean drawing = true;
-    
-    while(abs(currentPos) < lineLength) {
-      float start = currentPos;
-      float end = start + sign * (drawing ? dashLen : gapLen);
-      
-      if(drawing) {
-        line(start * dirX, start * dirY, 
-             end * dirX, end * dirY);
-      }
-      
-      currentPos = end;
-      drawing = !drawing;
-    }
-  }
-  
-  popMatrix();
 }
 
 void mousePressed()
@@ -306,53 +254,32 @@ class UDPReceiver extends Thread {
   }
 }
 
-
+// ----- Process Incoming Commands -----
+// Maps received command letters to the desired logo actions.
 void processCommand(String cmd) {
-  cmd = cmd.toUpperCase();
-  float moveStep = inchToPix(.090f); // speed (step)
-  
-  switch(cmd) {
-    // ===== 修正角度定义 =====
-    case "X": 
-      logoRotation = 0;    // → 右（0度）
-      break;
-    case "Y": 
-      logoRotation = 270;   // ↓ 下（90度）
-      break;
-    case "A": 
-      logoRotation = 315;  // ↗ 右上（东北方向315度）
-      break;
-    case "S": 
-      logoRotation = 225;  // ↖ 左上（西北方向225度）
-      break;
-
-    // ===== 移动控制保持原逻辑 =====
-    case "T": 
-      logoX += cos(radians(logoRotation)) * moveStep;
-      logoY += sin(radians(logoRotation)) * moveStep;
-      break;
-    case "F": 
-      logoX -= cos(radians(logoRotation)) * moveStep;
-      logoY -= sin(radians(logoRotation)) * moveStep;
-      break;
-    // 3. color
-    
-    case "G": 
-      logoColor = color(0, 255, 0); // 绿
-      break;
-    case "B": 
-      logoColor = color(255, 0, 0); // 红
-      break;
-    case "N": case "M": 
-      logoColor = color(255);       // 白
-      break;
-
-    // 4. size
-    case "O": 
-      logoZ = constrain(logoZ - inchToPix(.02f), .01, inchToPix(4f));
-      break;
-    case "P":
-      logoZ = constrain(logoZ + inchToPix(.02f), .01, inchToPix(4f)); 
-      break;
+  if (cmd.equals("L")) {
+    // Rotate counterclockwise
+    logoRotation--;
+  } else if (cmd.equals("R")) {
+    // Rotate clockwise
+    logoRotation++;
+  } else if (cmd.equals("-")) {
+    // Decrease the logo size (Z)
+    logoZ = constrain(logoZ - inchToPix(.02f), .01, inchToPix(4f));
+  } else if (cmd.equals("+")) {
+    // Increase the logo size (Z)
+    logoZ = constrain(logoZ + inchToPix(.02f), .01, inchToPix(4f));
+  } else if (cmd.equals("A")) {
+    // Move left
+    logoX -= inchToPix(.02f);
+  } else if (cmd.equals("D")) {
+    // Move right
+    logoX += inchToPix(.02f);
+  } else if (cmd.equals("W")) {
+    // Move up
+    logoY -= inchToPix(.02f);
+  } else if (cmd.equals("S")) {
+    // Move down
+    logoY += inchToPix(.02f);
   }
 }
