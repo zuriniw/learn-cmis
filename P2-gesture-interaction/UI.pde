@@ -27,6 +27,8 @@ float logoX = 500;
 float logoY = 500;
 float logoZ = 50f;
 float logoRotation = 0;
+color logoColor = color(255); 
+
 
 private class Destination
 {
@@ -68,7 +70,6 @@ void setup() {
   new UDPReceiver(5005).start();
 }
 
-
 // this loop function is running continously after setup() is executed
 void draw() {
 
@@ -109,12 +110,16 @@ void draw() {
 
   //===========DRAW LOGO SQUARE=================
   pushMatrix();
-  translate(logoX, logoY); //translate draw center to the center oft he logo square
-  rotate(radians(logoRotation)); //rotate using the logo square as the origin
+  translate(logoX, logoY);
+  rotate(radians(logoRotation));
   noStroke();
-  fill(60, 60, 192, 192);
-  rect(0, 0, logoZ, logoZ);
+  fill(logoColor);
+  rect(0, 0, logoZ, logoZ);  // 绘制方块
+  
   popMatrix();
+  
+  // 新增：绘制方向轴线
+  drawDirectionAxis(); // 调用虚线绘制方法
 
   //===========DRAW EXAMPLE CONTROLS=================
   fill(255);
@@ -138,7 +143,6 @@ void scaffoldControlLogic()
   //lower left corner, decrease Z
   text("-", inchToPix(.4f), height-inchToPix(.4f));
   if (mousePressed && dist(0, height, mouseX, mouseY)<inchToPix(.8f))
-    logoZ = constrain(logoZ-inchToPix(.02f), .01, inchToPix(4f)); //leave min and max alone!
 
   //lower right corner, increase Z
   text("+", width-inchToPix(.4f), height-inchToPix(.4f));
@@ -161,6 +165,53 @@ void scaffoldControlLogic()
   text("down", width/2, height-inchToPix(.4f));
   if (mousePressed && dist(width/2, height, mouseX, mouseY)<inchToPix(.8f))
     logoY+=inchToPix(.02f);
+}
+
+
+
+// ====== 修正后的方向轴线绘制方法 ======
+void drawDirectionAxis() {
+  pushMatrix();
+  translate(logoX, logoY); // 只需一次坐标平移
+  
+  // 设置虚线样式（恢复关键参数）
+  stroke(128);        // 灰色
+  strokeWeight(1.5);
+  strokeCap(ROUND);   // 必须保留圆头端点
+  noFill();
+  
+  // 基于axisDirection计算方向向量
+  float dirX = cos(radians(axisDirection));
+  float dirY = sin(radians(axisDirection));
+  
+  // 动态虚线参数优化
+  float dashLen = 20; 
+  float gapLen = 15;
+  float maxLength = dist(0, 0, width, height); // 最大绘制长度
+  
+  // 双方向绘制（正负延伸）
+  for(int direction = -1; direction <= 1; direction += 2) {
+    float currentPos = 0;
+    boolean isDrawing = true;
+    
+    // 优化循环条件
+    while(abs(currentPos) < maxLength) {
+      float segment = isDrawing ? dashLen : gapLen;
+      float start = currentPos;
+      float end = currentPos + direction * segment;
+      
+      if(isDrawing) {
+        // 使用相对坐标绘制线段
+        line(start * dirX, start * dirY, 
+             end * dirX, end * dirY);
+      }
+      
+      currentPos = end;
+      isDrawing = !isDrawing;
+    }
+  }
+  
+  popMatrix();
 }
 
 void mousePressed()
@@ -193,10 +244,10 @@ void mouseReleased()
 // you may not change the error computation
 public boolean checkForSuccess()
 {
-  Destination d = destinations.get(trialIndex);	
+  Destination d = destinations.get(trialIndex);  
   boolean closeDist = dist(d.x, d.y, logoX, logoY) < inchToPix(.2f); //has to be within +-0.2"
   boolean closeRotation = calculateDifferenceBetweenAngles(d.rotation, logoRotation) <= 10;
-  boolean closeZ = abs(d.z - logoZ) < inchToPix(.2f); //has to be within +-0.2"	
+  boolean closeZ = abs(d.z - logoZ) < inchToPix(.2f); //has to be within +-0.2"  
 
   println("Close Enough Distance: " + closeDist + " (logo X/Y = " + d.x + "/" + d.y + ", destination X/Y = " + logoX + "/" + logoY +")");
   println("Close Enough Rotation: " + closeRotation + " (rot dist="+calculateDifferenceBetweenAngles(d.rotation, logoRotation)+")");
@@ -254,32 +305,78 @@ class UDPReceiver extends Thread {
   }
 }
 
-// ----- Process Incoming Commands -----
-// Maps received command letters to the desired logo actions.
+// ====== 新增键盘输入处理 ======
+void keyPressed() {
+  // 仅处理基本键（非特殊控制键）
+  if (key != CODED) {
+    // 将小写字母转为大写以匹配命令格式
+    String cmd = String.valueOf(key).toUpperCase();
+    processCommand(cmd);
+  }
+}
+
+// ====== 新增轴方向变量 ======
+float axisDirection = 0; // 独立控制移动方向（单位：度）
+
+// ====== 修改后的processCommand函数 ======
 void processCommand(String cmd) {
-  if (cmd.equals("L")) {
-    // Rotate counterclockwise
-    logoRotation--;
-  } else if (cmd.equals("R")) {
-    // Rotate clockwise
-    logoRotation++;
-  } else if (cmd.equals("-")) {
-    // Decrease the logo size (Z)
-    logoZ = constrain(logoZ - inchToPix(.02f), .01, inchToPix(4f));
-  } else if (cmd.equals("+")) {
-    // Increase the logo size (Z)
-    logoZ = constrain(logoZ + inchToPix(.02f), .01, inchToPix(4f));
-  } else if (cmd.equals("A")) {
-    // Move left
-    logoX -= inchToPix(.02f);
-  } else if (cmd.equals("D")) {
-    // Move right
-    logoX += inchToPix(.02f);
-  } else if (cmd.equals("W")) {
-    // Move up
-    logoY -= inchToPix(.02f);
-  } else if (cmd.equals("S")) {
-    // Move down
-    logoY += inchToPix(.02f);
+  cmd = cmd.toUpperCase();
+  float moveStep = inchToPix(.090f);
+
+  switch(cmd) {
+    // === 轴方向控制 ===
+    case "X": 
+      axisDirection = 0;    // → 右
+      break;
+    case "Y": 
+      axisDirection = 270;   // ↓ 下
+      break;
+    case "A": 
+      axisDirection = 315;  // ↗ 右上
+      break;
+    case "S": 
+      axisDirection = 225;  // ↖ 左上
+      break;
+
+    // === 移动控制（基于轴方向）===
+    case "F": 
+      logoX += cos(radians(axisDirection)) * moveStep;
+      logoY += sin(radians(axisDirection)) * moveStep;
+      logoColor = color(0, 155, 100);
+      break;
+    case "B": 
+      logoX -= cos(radians(axisDirection)) * moveStep;
+      logoY -= sin(radians(axisDirection)) * moveStep;
+      logoColor = color(155, 0, 100);
+      break;
+
+    // === 独立旋转控制 ===
+    case "I":  // 逆时针
+      logoRotation = (logoRotation - 8 + 360) % 360;
+      break;
+    case "O":  // 顺时针
+      logoRotation = (logoRotation + 8) % 360;
+      break;
+
+    // === 其他保持原有逻辑 ===
+    case "N": case "M": 
+      logoColor = color(255);   
+      break;
+    case "D": 
+      logoZ = constrain(logoZ - inchToPix(.06f), .01, inchToPix(4f));
+      break;
+    case "U":
+      logoZ = constrain(logoZ + inchToPix(.06f), .01, inchToPix(4f)); 
+      break;
+    case "L": case "C":
+      if (!userDone) {
+        if (!checkForSuccess()) errorCount++;
+        trialIndex++;
+        if (trialIndex == trialCount) {
+          userDone = true;
+          finishTime = millis();
+        }
+      }
+      break;
   }
 }
