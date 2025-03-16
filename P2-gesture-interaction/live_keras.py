@@ -49,7 +49,7 @@ prediction_to_key = {
     'd': 'D', 
     'u': 'U',
     ##
-    'Y': 'Y',
+    'y': 'Y',
     't': 'T',
     ### 
     'o': 'O',
