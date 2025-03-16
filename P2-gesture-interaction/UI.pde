@@ -318,39 +318,34 @@ void keyPressed() {
 // ====== 新增轴方向变量 ======
 float axisDirection = 0; // 独立控制移动方向（单位：度）
 
-// ====== 修改后的processCommand函数 ======
 void processCommand(String cmd) {
   cmd = cmd.toUpperCase();
   float moveStep = inchToPix(.090f);
 
   switch(cmd) {
-    // === 轴方向控制 ===
-    case "X": 
-      axisDirection = 0;    // → 右
-      break;
-    case "Y": 
-      axisDirection = 270;   // ↓ 下
-      break;
-    case "A": 
-      axisDirection = 315;  // ↗ 右上
-      break;
-    case "S": 
-      axisDirection = 225;  // ↖ 左上
-      break;
-
-    // === 移动控制（基于轴方向）===
+    // === 新的移动控制 ===
     case "F": 
-      logoX += cos(radians(axisDirection)) * moveStep;
-      logoY += sin(radians(axisDirection)) * moveStep;
+      // 上升 (负Y方向)
+      logoY -= moveStep;
       logoColor = color(0, 155, 100);
       break;
     case "B": 
-      logoX -= cos(radians(axisDirection)) * moveStep;
-      logoY -= sin(radians(axisDirection)) * moveStep;
+      // 下降 (正Y方向)
+      logoY += moveStep;
       logoColor = color(155, 0, 100);
       break;
+    case "H":
+      // 右移 (正X方向)
+      logoX += moveStep;
+      logoColor = color(100, 100, 155);
+      break;
+    case "G":
+      // 左移 (负X方向)
+      logoX -= moveStep;
+      logoColor = color(155, 100, 100);
+      break;
 
-    // === 独立旋转控制 ===
+    // === 保留旋转控制 ===
     case "I":  // 逆时针
       logoRotation = (logoRotation - 8 + 360) % 360;
       break;

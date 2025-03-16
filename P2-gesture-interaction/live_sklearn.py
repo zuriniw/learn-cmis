@@ -12,8 +12,8 @@ ARDUINO_PORT_LEFT = '/dev/cu.usbmodem13401'  # 左板
 ARDUINO_PORT_RIGHT = '/dev/cu.usbmodem13201'  # 右板
 
 # 优化串口通信配置：提高波特率和降低超时
-ser_left = serial.Serial(ARDUINO_PORT_LEFT, 115200, timeout=0.1)
-ser_right = serial.Serial(ARDUINO_PORT_RIGHT, 115200, timeout=0.1)
+ser_left = serial.Serial(ARDUINO_PORT_LEFT, 9600, timeout=0.4)
+ser_right = serial.Serial(ARDUINO_PORT_RIGHT, 9600, timeout=0.4)
 
 #### UDP配置 ####
 UDP_IP = "127.0.0.1"
@@ -40,7 +40,7 @@ for _ in range(window_size):
 
 # 加载模型
 try:
-    model_path = '/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/rf_b_c_d_f_i_l_n_o_u_x_y__1742001771-660697.pkl'
+    model_path = '/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/rf_b_d_f_g_h_i_m_n_o_u__1742084517-9129019.pkl'
     with open(model_path, 'rb') as f:
         model = pickle.load(f)
     print("模型加载成功")
@@ -52,7 +52,7 @@ except Exception as e:
 prediction_to_key = {
     'x': 'X', 'y': 'Y', 'l': 'L', 'c': 'C',
     'd': 'D', 'u': 'U', 'i': 'I', 'o': 'O',
-    'f': 'F', 'b': 'B',
+    'f': 'F', 'b': 'B','m': 'N', 'n': 'N'
 }
 
 # 优化数据处理函数
@@ -137,7 +137,7 @@ def prediction_thread():
             # 控制预测频率
             predict_counter += 1
             
-            if predict_counter % 5 == 0:  # 每5次循环预测一次
+            if predict_counter % 10 == 0:  # 每5次循环预测一次
                 # 线程安全地访问buffer
                 with buffer_lock:
                     if len(buffer) >= window_size:
@@ -162,7 +162,7 @@ def prediction_thread():
                     sock.sendto(key.encode(), (UDP_IP, UDP_PORT))
             
             # 预测间隔时间
-            time.sleep(0.02)  # 20ms
+            time.sleep(0.05)  # 20ms
                 
         except Exception as e:
             print(f"预测异常: {str(e)}")
