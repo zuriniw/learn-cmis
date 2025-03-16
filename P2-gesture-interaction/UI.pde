@@ -275,7 +275,7 @@ float axisDirection = 0; // 独立控制移动方向（单位：度）
 
 void processCommand(String cmd) {
   cmd = cmd.toUpperCase();
-  float moveStep = inchToPix(.090f);
+  float moveStep = inchToPix(.120f);
 
   switch(cmd) {
     // === 新的移动控制 ===
@@ -299,6 +299,16 @@ void processCommand(String cmd) {
       logoX -= moveStep;
       logoColor = color(155, 100, 100);
       break;
+    case "M":
+      // 右移 (正X方向)
+      logoX += moveStep * 3;
+      logoColor = color(100, 100, 155);
+      break;
+    case "Z":
+      // 左移 (负X方向)
+      logoX -= moveStep * 3;
+      logoColor = color(155, 100, 100);
+      break;
 
     // === 保留旋转控制 ===
     case "I":  // 逆时针
@@ -309,7 +319,7 @@ void processCommand(String cmd) {
       break;
 
     // === 其他保持原有逻辑 ===
-    case "N": case "M": 
+    case "N":
       logoColor = color(255);   
       break;
     case "T": 

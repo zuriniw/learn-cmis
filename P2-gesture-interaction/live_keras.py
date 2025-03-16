@@ -36,7 +36,7 @@ for _ in range(window_size):
     buffer.append(np.zeros(12))
 
 # 定义模型名称
-model_name = 'a_c_d_l_n_o_t_u_y__1742108311-0224051'
+model_name = 'a_c_d_g_h_k_l_m_n_o_t_u_y_z__1742144759-802302'
 
 # 使用模型名称动态生成路径
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
@@ -46,7 +46,12 @@ label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interactio
 prediction_to_key = {
     'a': 'A',
     'l': 'L',
+    'm': 'M',# leftleft
+    'z': 'Z',# rightright
+    ##
     'd': 'D', 
+    'g': 'G', # downdown
+    'h': 'H', # upup
     'u': 'U',
     ##
     'y': 'Y',
@@ -216,7 +221,7 @@ def data_processing_thread():
                 # 根据不同字符的要求判断是否发送
                 send = False
                 if current_pred == 'c':
-                    # c 要求连续3次，并且上次发送的不能是 c
+                    # c 要求连续6次，并且上次发送的不能是 c
                     if consecutive_count == 6 and last_sent != 'c':
                         send = True
                 elif current_pred == 'n':
@@ -229,7 +234,7 @@ def data_processing_thread():
                         send = True      
                 else:
                     # 其他字符要求连续2次，允许重复发送
-                    if consecutive_count == 3:
+                    if consecutive_count == 2:
                         send = True
 
                 # 如果满足发送条件，则发送并重置连续计数
