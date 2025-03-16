@@ -36,7 +36,7 @@ for _ in range(window_size):
     buffer.append(np.zeros(12))
 
 # 定义模型名称
-model_name = 'b_c_d_f_g_h_i_n_o_u__1742096905-57687'
+model_name = 'b_c_d_f_g_h_n_o_u__1742101913-054409'
 
 # 使用模型名称动态生成路径
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
@@ -44,8 +44,17 @@ label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interactio
 
 # prediction mapping
 prediction_to_key = {
-    'g': 'G', 'h': 'H', 'd': 'D', 'u': 'U', 'i': 'I','r': 'R', 
-    'o': 'O', 'f': 'F', 'b': 'B', 'n': 'N', 'm': 'N', 'c': 'C'
+    'g': 'G', 
+    'h': 'H', 
+    'd': 'D', 
+    'u': 'U', 
+    'r': 'R', 
+    'o': 'O',
+    'f': 'H',
+    'b': 'G', 
+    'n': 'N', 
+    'm': 'N', 
+    'c': 'C'
 }
 
 print("loading model and label encoder")
@@ -214,6 +223,10 @@ def data_processing_thread():
                     # n 只需一次，并且上次发送的不能是 n
                     if consecutive_count == 1 and last_sent != 'n':
                         send = True
+                elif current_pred == 'o':
+                    # o 需2次，并且上次发送的不能是 o
+                    if consecutive_count == 2 and last_sent != 'o':
+                        send = True      
                 else:
                     # 其他字符要求连续2次，允许重复发送
                     if consecutive_count == 2:

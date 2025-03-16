@@ -118,8 +118,6 @@ void draw() {
   
   popMatrix();
   
-  // 新增：绘制方向轴线
-  drawDirectionAxis(); // 调用虚线绘制方法
 
   //===========DRAW EXAMPLE CONTROLS=================
   fill(255);
@@ -169,50 +167,7 @@ void scaffoldControlLogic()
 
 
 
-// ====== 修正后的方向轴线绘制方法 ======
-void drawDirectionAxis() {
-  pushMatrix();
-  translate(logoX, logoY); // 只需一次坐标平移
-  
-  // 设置虚线样式（恢复关键参数）
-  stroke(128);        // 灰色
-  strokeWeight(1.5);
-  strokeCap(ROUND);   // 必须保留圆头端点
-  noFill();
-  
-  // 基于axisDirection计算方向向量
-  float dirX = cos(radians(axisDirection));
-  float dirY = sin(radians(axisDirection));
-  
-  // 动态虚线参数优化
-  float dashLen = 20; 
-  float gapLen = 15;
-  float maxLength = dist(0, 0, width, height); // 最大绘制长度
-  
-  // 双方向绘制（正负延伸）
-  for(int direction = -1; direction <= 1; direction += 2) {
-    float currentPos = 0;
-    boolean isDrawing = true;
-    
-    // 优化循环条件
-    while(abs(currentPos) < maxLength) {
-      float segment = isDrawing ? dashLen : gapLen;
-      float start = currentPos;
-      float end = currentPos + direction * segment;
-      
-      if(isDrawing) {
-        // 使用相对坐标绘制线段
-        line(start * dirX, start * dirY, 
-             end * dirX, end * dirY);
-      }
-      
-      currentPos = end;
-      isDrawing = !isDrawing;
-    }
-  }
-  
-  popMatrix();
-}
+
 
 void mousePressed()
 {
@@ -350,7 +305,7 @@ void processCommand(String cmd) {
       logoRotation = (logoRotation - 8 + 360) % 360;
       break;
     case "O":  // 顺时针
-      logoRotation = (logoRotation + 8) % 360;
+      logoRotation = (logoRotation + 45) % 360;
       break;
 
     // === 其他保持原有逻辑 ===
