@@ -279,22 +279,22 @@ void processCommand(String cmd) {
 
   switch(cmd) {
     // === 新的移动控制 ===
-    case "F": 
+    case "U": 
       // 上升 (负Y方向)
       logoY -= moveStep;
       logoColor = color(0, 155, 100);
       break;
-    case "B": 
+    case "D": 
       // 下降 (正Y方向)
       logoY += moveStep;
       logoColor = color(155, 0, 100);
       break;
-    case "H":
+    case "L":
       // 右移 (正X方向)
       logoX += moveStep;
       logoColor = color(100, 100, 155);
       break;
-    case "G":
+    case "A":
       // 左移 (负X方向)
       logoX -= moveStep;
       logoColor = color(155, 100, 100);
@@ -305,20 +305,20 @@ void processCommand(String cmd) {
       logoRotation = (logoRotation - 8 + 360) % 360;
       break;
     case "O":  // 顺时针
-      logoRotation = (logoRotation + 45) % 360;
+      logoRotation = (logoRotation + 30) % 360;
       break;
 
     // === 其他保持原有逻辑 ===
     case "N": case "M": 
       logoColor = color(255);   
       break;
-    case "D": 
+    case "T": 
       logoZ = constrain(logoZ - inchToPix(.06f), .01, inchToPix(4f));
       break;
-    case "U":
+    case "Y":
       logoZ = constrain(logoZ + inchToPix(.06f), .01, inchToPix(4f)); 
       break;
-    case "L": case "C":
+    case "C":
       if (!userDone) {
         if (!checkForSuccess()) errorCount++;
         trialIndex++;

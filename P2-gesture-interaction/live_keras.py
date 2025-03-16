@@ -36,7 +36,7 @@ for _ in range(window_size):
     buffer.append(np.zeros(12))
 
 # 定义模型名称
-model_name = 'b_c_d_f_g_h_n_o_u__1742101913-054409'
+model_name = 'b_c_d_f_g_h_n_o_u__1742102633-8481479'
 
 # 使用模型名称动态生成路径
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
@@ -44,14 +44,12 @@ label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interactio
 
 # prediction mapping
 prediction_to_key = {
-    'g': 'G', 
-    'h': 'H', 
+    'a': 'A',
+    'l': 'L',
     'd': 'D', 
     'u': 'U', 
     'r': 'R', 
     'o': 'O',
-    'f': 'H',
-    'b': 'G', 
     'n': 'N', 
     'm': 'N', 
     'c': 'C'
