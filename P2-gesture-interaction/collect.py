@@ -151,7 +151,8 @@ def normalize_acc_gyr(values, is_acc=True):
         MIN_VAL, MAX_VAL = -2.0, 2.0
     else:
         MIN_VAL, MAX_VAL = -500.0, 500.0
-    normalized = (values - MIN_VAL) / (MAX_VAL - MIN_VAL)
+    normalized = 2*(values - MIN_VAL) / (MAX_VAL - MIN_VAL)-1
+
     normalized = np.clip(normalized, -1, 1)
     
     return normalized

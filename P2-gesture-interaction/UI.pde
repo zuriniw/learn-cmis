@@ -284,9 +284,19 @@ void processCommand(String cmd) {
       logoY -= moveStep;
       logoColor = color(0, 155, 100);
       break;
+    case "H": 
+      // 上升 (负Y方向)
+      logoY -= 3 * moveStep;
+      logoColor = color(0, 155, 100);
+      break;
     case "D": 
       // 下降 (正Y方向)
       logoY += moveStep;
+      logoColor = color(155, 0, 100);
+      break;
+    case "G": 
+      // 下降 (正Y方向)
+      logoY += 3 * moveStep;
       logoColor = color(155, 0, 100);
       break;
     case "L":
@@ -312,10 +322,10 @@ void processCommand(String cmd) {
 
     // === 保留旋转控制 ===
     case "I":  // 逆时针
-      logoRotation = (logoRotation - 8 + 360) % 360;
+      logoRotation = (logoRotation - 20 + 360) % 360;
       break;
     case "O":  // 顺时针
-      logoRotation = (logoRotation + 30) % 360;
+      logoRotation = (logoRotation + 20) % 360;
       break;
 
     // === 其他保持原有逻辑 ===

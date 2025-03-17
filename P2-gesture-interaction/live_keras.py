@@ -30,7 +30,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 ##############################################
 ### load model and label encoder #############
 ##############################################
-window_size = 20
+window_size = 10
 buffer = deque(maxlen=window_size)
 buffer_lock = threading.Lock()
 
@@ -38,7 +38,7 @@ buffer_lock = threading.Lock()
 for _ in range(window_size):
     buffer.append(np.zeros(12))
 
-model_name = 'a_c_d_g_h_i_l_m_n_o_t_u_y_z__1742224738-5011451'
+model_name = 'a_c_d_g_h_i_k_l_m_n_o_t_u_y_z__1742227488_642874'
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
 label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/label_encoder_{model_name}.pkl'
 
@@ -188,8 +188,8 @@ def data_processing_thread():
                     if consecutive_count == 3 and last_sent != 'c':
                         send = True
                 elif current_pred == 'n' or current_pred == 'k':
-                    # n 只需一次，并且上次发送的不能是 n
-                    if consecutive_count == 1 and last_sent != 'n':
+                    # nk 只需一次，并且上次发送的不能是 nk
+                    if consecutive_count == 1 and (last_sent != 'n' and last_sent != 'k'):
                         send = True
                 elif current_pred == 'o':
                     # o 需2次，并且上次发送的不能是 o
