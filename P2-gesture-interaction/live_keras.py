@@ -9,6 +9,9 @@ import matplotlib.animation as animation
 import matplotlib as mpl
 import threading
 
+
+model_name = 'a_c_d_l_n_o_t_u_y__1742183423-3156118'
+
 ##############################################
 ############# set up serial port #############
 ##############################################
@@ -17,8 +20,8 @@ ARDUINO_PORT_left = '/dev/cu.usbmodem13401'
 ARDUINO_PORT_right = '/dev/cu.usbmodem13201'
 
 # Open serial ports for both boards
-ser_left = serial.Serial(ARDUINO_PORT_left, 9600, timeout=0.4)
-ser_right = serial.Serial(ARDUINO_PORT_right, 9600, timeout=0.4)
+ser_left = serial.Serial(ARDUINO_PORT_left, 9600)
+ser_right = serial.Serial(ARDUINO_PORT_right, 9600)
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
@@ -29,20 +32,16 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 ##############################################
 window_size = 50
 buffer = deque(maxlen=window_size)
-buffer_lock = threading.Lock()  # 添加锁以保护共享数据
+buffer_lock = threading.Lock()
 
 # Fill buffer with 0s (12 features for combined data from both boards)
 for _ in range(window_size):
     buffer.append(np.zeros(12))
 
-# 定义模型名称
-model_name = 'a_c_d_g_h_k_l_m_n_o_t_u_y_z__1742144759-802302'
-
-# 使用模型名称动态生成路径
+model_name = 'l_m_n__1742220916-5591621'
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
 label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/label_encoder_{model_name}.pkl'
 
-# prediction mapping
 prediction_to_key = {
     'a': 'A',
     'l': 'L',
@@ -59,6 +58,7 @@ prediction_to_key = {
     ### 
     'o': 'O',
     'n': 'N', 
+    'k': 'N',# messy
     'c': 'C'
 }
 
@@ -75,39 +75,6 @@ with open(label_encoder_path, 'rb') as f:
     label_encoder = pickle.load(f)
 print("loaded everything")
 
-def process_data(line, side):
-    """带校验的数据处理函数"""
-    if not line:
-        return None
-    try:
-        line_clean = line.replace(";", ",")
-        parts = line_clean.split(',')
-        values = []
-        for part in parts:
-            part = part.strip()
-            if not part:
-                continue
-            for prefix in ["ACC:", "GYR:"]:
-                if part.startswith(prefix):
-                    part = part.replace(prefix, "")
-            try:
-                values.append(float(part))
-            except Exception as e:
-                print(f"[{side}] 无法转换值: {part}")
-                raise e
-                
-        if len(values) != 6:
-            print(f"[{side}] 数据长度错误: {len(values)}")
-            return None
-            
-        acc_values = np.array(values[:3], dtype=np.float32) / 8
-        gyr_values = np.array(values[3:], dtype=np.float32) / 4000
-        
-        return acc_values, gyr_values
-        
-    except Exception as e:
-        print(f"[{side}] 数据处理失败: {str(e)}")
-        return None
 
 ##############################################
 ########### 添加可视化相关代码 ###############
@@ -136,6 +103,7 @@ for i in range(12):
 ax.legend(ncol=3, loc='upper right', fontsize=6)
 ax.set_title("Dual Board Sensor Data with Predictions", color='#333333', fontsize=10)
 ax.set_facecolor('#F5F5F5')
+ax.set_ylim(-1, 1)
 
 # 添加预测文本显示
 prediction_text = ax.text(0.02, 0.95, "Prediction: None", transform=ax.transAxes, 
@@ -156,14 +124,6 @@ def animate(frame):
     ax.autoscale_view()
     return lines + [prediction_text]
 
-def on_key_press(event):
-    """处理键盘事件"""
-    key = event.key.lower()
-    if key == 'q':
-        plt.close()
-
-# 连接键盘事件
-fig.canvas.mpl_connect('key_press_event', on_key_press)
 
 ##############################################
 ############ 数据处理线程函数 ################
@@ -221,10 +181,10 @@ def data_processing_thread():
                 # 根据不同字符的要求判断是否发送
                 send = False
                 if current_pred == 'c':
-                    # c 要求连续6次，并且上次发送的不能是 c
-                    if consecutive_count == 6 and last_sent != 'c':
+                    # c 要求连续3次，并且上次发送的不能是 c
+                    if consecutive_count == 3 and last_sent != 'c':
                         send = True
-                elif current_pred == 'n':
+                elif current_pred == 'n' or current_pred == 'k':
                     # n 只需一次，并且上次发送的不能是 n
                     if consecutive_count == 1 and last_sent != 'n':
                         send = True
@@ -251,6 +211,58 @@ def data_processing_thread():
 
         except Exception as e:
             print(f"Error in data processing thread: {e}")
+
+def process_data(line, side):
+    """带校验的数据处理函数"""
+    if not line:
+        return None
+    try:
+        line_clean = line.replace(";", ",")
+        parts = line_clean.split(',')
+        values = []
+        for part in parts:
+            part = part.strip()
+            if not part:
+                continue
+            for prefix in ["ACC:", "GYR:"]:
+                if part.startswith(prefix):
+                    part = part.replace(prefix, "")
+            try:
+                values.append(float(part))
+            except Exception as e:
+                print(f"[{side}] 无法转换值: {part}")
+                raise e
+                
+        if len(values) != 6:
+            print(f"[{side}] 数据长度错误: {len(values)}")
+            return None
+            
+        acc_values = np.array(values[:3], dtype=np.float32)
+        gyr_values = np.array(values[3:], dtype=np.float32)
+
+        acc_values, gyr_values = normalize(acc_values, gyr_values)
+        
+        return acc_values, gyr_values
+        
+    except Exception as e:
+        print(f"[{side}] 数据处理失败: {str(e)}")
+        return None
+    
+############### normalization ################
+def normalize(acc_values, gyr_values):
+    # 预定义的传感器数据范围
+    ACC_MIN, ACC_MAX = -2.0, 2.0  # 加速度计通常在±2g范围
+    GYR_MIN, GYR_MAX = -500.0, 500.0  # 陀螺仪通常在±500度/秒范围
+    
+    # 归一化公式: (value - min) / (max - min)
+    norm_acc = (np.array(acc_values) - ACC_MIN) / (ACC_MAX - ACC_MIN)
+    norm_gyr = (np.array(gyr_values) - GYR_MIN) / (GYR_MAX - GYR_MIN)
+    
+    # 确保值在[-1,1]范围内（处理超出预期范围的异常值）
+    norm_acc = np.clip(norm_acc, -1, 1)
+    norm_gyr = np.clip(norm_gyr, -1, 1)
+    
+    return norm_acc, norm_gyr
 
 ##############################################
 ############### 主函数 #######################

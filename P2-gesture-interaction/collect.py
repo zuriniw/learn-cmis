@@ -26,6 +26,9 @@ ARDUINO_PORT_RIGHT = '/dev/cu.usbmodem13201'  # right
 ser_left = serial.Serial(ARDUINO_PORT_LEFT, 9600)
 ser_right = serial.Serial(ARDUINO_PORT_RIGHT, 9600)
 
+############### normalization ################
+
+
 
 ############### data processing ################
 buffer = deque(maxlen=100)
@@ -65,8 +68,9 @@ def parse_sensor_line(line, label_acc="ACC:", label_gyr="GYR:"):
         return None
 
     # Normalize
-    acc_values = np.array(acc_values, dtype=np.float32) / 8
-    gyr_values = np.array(gyr_values, dtype=np.float32) / 4000
+    acc_values = np.array(acc_values, dtype=np.float32)
+    gyr_values = np.array(gyr_values, dtype=np.float32)
+    acc_values, gyr_values = normalize(acc_values, gyr_values)
 
     return acc_values, gyr_values
 
@@ -127,6 +131,7 @@ for i in range(12):
 ax.legend(ncol=3, loc='upper right', fontsize=6)
 ax.set_title("Dual Board Sensor Data", color='#333333', fontsize=10)
 ax.set_facecolor('#F5F5F5')
+ax.set_ylim(-1, 1)
 
 def animate(frame):
     """update in realtime"""
