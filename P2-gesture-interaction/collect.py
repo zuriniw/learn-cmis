@@ -26,10 +26,6 @@ ARDUINO_PORT_RIGHT = '/dev/cu.usbmodem13201'  # right
 ser_left = serial.Serial(ARDUINO_PORT_LEFT, 9600)
 ser_right = serial.Serial(ARDUINO_PORT_RIGHT, 9600)
 
-############### normalization ################
-
-
-
 ############### data processing ################
 buffer = deque(maxlen=100)
 for _ in range(buffer.maxlen):
@@ -70,7 +66,6 @@ def parse_sensor_line(line, label_acc="ACC:", label_gyr="GYR:"):
     # Normalize
     acc_values = np.array(acc_values, dtype=np.float32)
     gyr_values = np.array(gyr_values, dtype=np.float32)
-    acc_values, gyr_values = normalize(acc_values, gyr_values)
 
     return acc_values, gyr_values
 
@@ -117,8 +112,7 @@ labels = [
     'L-AccX', 'L-AccY', 'L-AccZ', 
     'L-GyrX', 'L-GyrY', 'L-GyrZ',
     'R-AccX', 'R-AccY', 'R-AccZ',
-    'R-GyrX', 'R-GyrY', 'R-GyrZ'
-]
+    'R-GyrX', 'R-GyrY', 'R-GyrZ']
 
 lines = []
 for i in range(12):
@@ -131,17 +125,36 @@ for i in range(12):
 ax.legend(ncol=3, loc='upper right', fontsize=6)
 ax.set_title("Dual Board Sensor Data", color='#333333', fontsize=10)
 ax.set_facecolor('#F5F5F5')
-ax.set_ylim(-1, 1)
 
 def animate(frame):
-    """update in realtime"""
     data_array = np.array(buffer)
+    normalized_data = normalize_for_display(data_array)
     for i in range(12):
-        lines[i].set_ydata(data_array[:, i])
-    ax.relim()
-    ax.autoscale_view()
+        lines[i].set_ydata(normalized_data[:, i])
+        ax.set_ylim(-1, 1)
     return lines
 
+def normalize_for_display(data_array):
+    result = np.copy(data_array)
+    # 左侧加速度 (0,1,2)
+    result[:, 0:3] = normalize_acc_gyr(data_array[:, 0:3], is_acc=True)
+    # 左侧陀螺仪 (3,4,5)
+    result[:, 3:6] = normalize_acc_gyr(data_array[:, 3:6], is_acc=False)
+    # 右侧加速度 (6,7,8)
+    result[:, 6:9] = normalize_acc_gyr(data_array[:, 6:9], is_acc=True)
+    # 右侧陀螺仪 (9,10,11)
+    result[:, 9:12] = normalize_acc_gyr(data_array[:, 9:12], is_acc=False)
+    return result
+
+def normalize_acc_gyr(values, is_acc=True):
+    if is_acc:
+        MIN_VAL, MAX_VAL = -2.0, 2.0
+    else:
+        MIN_VAL, MAX_VAL = -500.0, 500.0
+    normalized = (values - MIN_VAL) / (MAX_VAL - MIN_VAL)
+    normalized = np.clip(normalized, -1, 1)
+    
+    return normalized
 def on_key_press(event):
     global recording
     key = event.key.lower()
@@ -170,6 +183,7 @@ def on_key_press(event):
                     recording["file"] = None
                 ax.set_title("Dual Board Sensor Data", color='#333333')         
     fig.canvas.draw_idle()
+
 
 ############### main loop ################
 serial_thread = threading.Thread(target=read_serial, daemon=True)

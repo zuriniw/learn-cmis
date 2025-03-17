@@ -30,7 +30,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 ##############################################
 ### load model and label encoder #############
 ##############################################
-window_size = 50
+window_size = 20
 buffer = deque(maxlen=window_size)
 buffer_lock = threading.Lock()
 
@@ -38,7 +38,7 @@ buffer_lock = threading.Lock()
 for _ in range(window_size):
     buffer.append(np.zeros(12))
 
-model_name = 'l_m_n__1742220916-5591621'
+model_name = 'a_c_d_g_h_i_l_m_n_o_t_u_y_z__1742224738-5011451'
 model_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/{model_name}.keras'
 label_encoder_path = f'/Users/ziru/Documents/GitHub/CMIS_1/P2-gesture-interaction/models/label_encoder_{model_name}.pkl'
 
@@ -56,9 +56,12 @@ prediction_to_key = {
     'y': 'Y',
     't': 'T',
     ### 
+    'i': 'I',
     'o': 'O',
+    ##
     'n': 'N', 
     'k': 'N',# messy
+    ##
     'c': 'C'
 }
 
@@ -254,11 +257,11 @@ def normalize(acc_values, gyr_values):
     ACC_MIN, ACC_MAX = -2.0, 2.0  # 加速度计通常在±2g范围
     GYR_MIN, GYR_MAX = -500.0, 500.0  # 陀螺仪通常在±500度/秒范围
     
-    # 归一化公式: (value - min) / (max - min)
-    norm_acc = (np.array(acc_values) - ACC_MIN) / (ACC_MAX - ACC_MIN)
-    norm_gyr = (np.array(gyr_values) - GYR_MIN) / (GYR_MAX - GYR_MIN)
+    # 归一化到 [-1,1]
+    norm_acc = 2 * (np.array(acc_values) - ACC_MIN) / (ACC_MAX - ACC_MIN) - 1
+    norm_gyr = 2 * (np.array(gyr_values) - GYR_MIN) / (GYR_MAX - GYR_MIN) - 1
     
-    # 确保值在[-1,1]范围内（处理超出预期范围的异常值）
+    # 确保值在 [-1,1] 范围内（处理超出预期范围的异常值）
     norm_acc = np.clip(norm_acc, -1, 1)
     norm_gyr = np.clip(norm_gyr, -1, 1)
     
