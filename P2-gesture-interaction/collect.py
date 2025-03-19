@@ -161,6 +161,7 @@ def on_key_press(event):
     key = event.key.lower()
     if key == 'q':
         plt.close()
+        
         return
     if len(key) != 1 or not key.isalpha():
         return

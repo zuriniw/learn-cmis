@@ -275,70 +275,133 @@ float axisDirection = 0; // 独立控制移动方向（单位：度）
 
 void processCommand(String cmd) {
   cmd = cmd.toUpperCase();
-  float moveStep = inchToPix(.120f);
+  float moveStep = inchToPix(.070f);
 
   switch(cmd) {
-    // === 新的移动控制 ===
-    case "U": 
-      // 上升 (负Y方向)
-      logoY -= moveStep;
-      logoColor = color(0, 155, 100);
+    // === 左右移动 ===
+    case "A": 
+      // leftleft moveStep * 2.5
+      logoX -= 4 * moveStep;
+      logoColor = color(155, 100, 100);
       break;
-    case "H": 
-      // 上升 (负Y方向)
-      logoY -= 3 * moveStep;
-      logoColor = color(0, 155, 100);
-      break;
-    case "D": 
-      // 下降 (正Y方向)
-      logoY += moveStep;
-      logoColor = color(155, 0, 100);
-      break;
-    case "G": 
-      // 下降 (正Y方向)
-      logoY += 3 * moveStep;
-      logoColor = color(155, 0, 100);
-      break;
-    case "L":
-      // 右移 (正X方向)
-      logoX += moveStep;
-      logoColor = color(100, 100, 155);
-      break;
-    case "A":
-      // 左移 (负X方向)
+    case "S": 
+      // left moveStep * 1
       logoX -= moveStep;
       logoColor = color(155, 100, 100);
       break;
-    case "M":
-      // 右移 (正X方向)
-      logoX += moveStep * 3;
+    case "K":
+      // right
+      logoX += moveStep;
       logoColor = color(100, 100, 155);
       break;
-    case "Z":
-      // 左移 (负X方向)
-      logoX -= moveStep * 3;
-      logoColor = color(155, 100, 100);
+    case "L":
+      // rightright
+      logoX += 4 * moveStep;
+      logoColor = color(100, 100, 155);
       break;
-
-    // === 保留旋转控制 ===
-    case "I":  // 逆时针
-      logoRotation = (logoRotation - 20 + 360) % 360;
-      break;
-    case "O":  // 顺时针
-      logoRotation = (logoRotation + 20) % 360;
-      break;
-
-    // === 其他保持原有逻辑 ===
-    case "N":
-      logoColor = color(255);   
+      
+    // === 上下移动 ===
+    case "Y": 
+      // upup
+      logoY -= 4 * moveStep;
+      logoColor = color(0, 155, 100);
       break;
     case "T": 
-      logoZ = constrain(logoZ - inchToPix(.06f), .01, inchToPix(4f));
+      // up
+      logoY -= moveStep;
+      logoColor = color(0, 155, 100);
       break;
-    case "Y":
-      logoZ = constrain(logoZ + inchToPix(.06f), .01, inchToPix(4f)); 
+    case "V": 
+      // down
+      logoY += moveStep;
+      logoColor = color(155, 0, 100);
       break;
+    case "B": 
+      // downdown
+      logoY += 4 * moveStep;
+      logoColor = color(155, 0, 100);
+      break;
+      
+    // === 对角线移动 ===
+    case "Q":
+      // leftupleftup
+      logoX -= 4 * moveStep;
+      logoY -= 4 * moveStep;
+      logoColor = color(155, 155, 0);
+      break;
+    case "W":
+      // leftup
+      logoX -= moveStep;
+      logoY -= moveStep;
+      logoColor = color(155, 155, 0);
+      break;
+    case "P":
+      // rightuprightup
+      logoX += 4 * moveStep;
+      logoY -= 4 * moveStep;
+      logoColor = color(0, 155, 155);
+      break;
+    case "O":
+      // rightup
+      logoX += moveStep;
+      logoY -= moveStep;
+      logoColor = color(0, 155, 155);
+      break;
+    case "X":
+      // leftdown
+      logoX -= moveStep;
+      logoY += moveStep;
+      logoColor = color(155, 0, 155);
+      break;
+    case "Z":
+      // leftdownleftdown
+      logoX -= 4 * moveStep;
+      logoY += 4 * moveStep;
+      logoColor = color(155, 0, 155);
+      break;
+    case "N":
+      // rightdown
+      logoX += moveStep;
+      logoY += moveStep;
+      logoColor = color(100, 100, 0);
+      break;
+    case "M":
+      // rightdownrightdown
+      logoX += 4 * moveStep;
+      logoY += 4 * moveStep;
+      logoColor = color(100, 100, 0);
+      break;
+      
+    // === 缩放控制 ===
+    case "D":
+      // smaller keep the original step
+      logoZ = constrain(logoZ - inchToPix(.16f), .01, inchToPix(4f));
+      break;
+    case "F":
+      // bigger
+      logoZ = constrain(logoZ + inchToPix(.16f), .01, inchToPix(4f));
+      break;
+      
+    // === 旋转控制 ===
+    case "J":
+      // ccw rotate
+      logoRotation = (logoRotation - 15 + 360) % 360;
+      break;
+    case "H":
+      // cw rotate
+      logoRotation = (logoRotation + 15) % 360;
+      break;
+      
+    // === 颜色控制 ===
+    case "E":
+    case "R":
+      // turn white
+      logoColor = color(255);
+      break;
+      
+    // === 其他控制 ===
     case "C":
+      // dont change
       if (!userDone) {
         if (!checkForSuccess()) errorCount++;
         trialIndex++;

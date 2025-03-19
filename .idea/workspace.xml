@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="89fb48b4-5fd4-470a-b153-da5d156def5f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/P2-gesture-interaction/collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/P2-gesture-interaction/collect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P2-gesture-interaction/UI.pde" beforeDir="false" afterPath="$PROJECT_DIR$/P2-gesture-interaction/UI.pde" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P2-gesture-interaction/live_sklearn.py" beforeDir="false" afterPath="$PROJECT_DIR$/P2-gesture-interaction/live_sklearn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/P2-gesture-interaction/train_keras.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/P2-gesture-interaction/train_keras.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/1741999467-451999/e.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
